@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jhphon0730/action_manager/internal/database"
 	"github.com/jhphon0730/action_manager/internal/middleware"
+	authmw "github.com/jhphon0730/action_manager/internal/middleware"
 	"github.com/jhphon0730/action_manager/internal/projects"
 	"github.com/jhphon0730/action_manager/internal/response"
 	"github.com/jhphon0730/action_manager/internal/users"
@@ -30,12 +31,12 @@ func (s *server) RegisterRoutes() {
 	{
 		usersGroup.POST("", userHan.SignUp)
 		usersGroup.POST("/sign-in", userHan.SignIn)
-		usersGroup.POST("/sign-out", middleware.AuthMiddleware(), userHan.SignOut)
+		usersGroup.POST("/sign-out", authmw.AuthMiddleware(), userHan.SignOut)
 	}
 
 	/* PROJECT */
 	projectGroup := v1.Group("/projects")
-	projectGroup.Use(middleware.AuthMiddleware())
+	projectGroup.Use(authmw.AuthMiddleware())
 	{
 		projectGroup.POST("", projectHan.CreateProject)
 		projectGroup.GET("", projectHan.GetAllProjects)

@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jhphon0730/action_manager/internal/response"
-	"github.com/jhphon0730/action_manager/pkg/utils"
+	"github.com/jhphon0730/action_manager/pkg/contextutils"
 )
 
 // ProjectHandler는 프로젝트를 관리하는 인터페이스입니다.
@@ -30,7 +30,7 @@ func NewProjectHandler(projectService ProjectService, projectMemberService Proje
 
 // CreateProject는 새로운 프로젝트를 생성합니다.
 func (h *projectHandler) CreateProject(c *gin.Context) {
-	userID, exists := utils.GetUserID(c)
+	userID, exists := contextutils.GetUserID(c)
 	if !exists {
 		response.RespondError(c, http.StatusUnauthorized, ErrUnauthorized.Error())
 		return
@@ -52,7 +52,7 @@ func (h *projectHandler) CreateProject(c *gin.Context) {
 
 // GetProjects는 사용자의 모든 프로젝트를 가져옵니다.
 func (h *projectHandler) GetAllProjects(c *gin.Context) {
-	userID, exists := utils.GetUserID(c)
+	userID, exists := contextutils.GetUserID(c)
 	if !exists {
 		response.RespondError(c, http.StatusUnauthorized, ErrUnauthorized.Error())
 		return

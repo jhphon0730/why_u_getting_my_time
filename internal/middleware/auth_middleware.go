@@ -8,12 +8,6 @@ import (
 	"github.com/jhphon0730/action_manager/internal/response"
 )
 
-const (
-	USER_ID_CTX_KEY = iota
-)
-
-type UserIDCTXKey uint
-
 // AuthMiddleware는 JWT 쿠키를 검증하고 userID를 context에 저장
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {

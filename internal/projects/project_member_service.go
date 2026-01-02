@@ -2,6 +2,8 @@ package projects
 
 // ProjectMemberService는 프로젝트 멤버 관리를 위한 인터페이스입니다.
 type ProjectMemberService interface {
+	IsMember(projectID, userID uint) (bool, error)
+	IsManager(projectID, userID uint) (bool, error)
 }
 
 // NewProjectMemberService는 새로운 ProjectMemberService 인스턴스를 생성합니다.
@@ -14,4 +16,14 @@ func NewProjectMemberService(projectMemberRepo ProjectMemberRepository) ProjectM
 	return &projectMemberService{
 		projectMemberRepo: projectMemberRepo,
 	}
+}
+
+// IsMember는 사용자가 프로젝트에 멤버인지 확인합니다.
+func (s *projectMemberService) IsMember(projectID, userID uint) (bool, error) {
+	return s.projectMemberRepo.IsMember(projectID, userID)
+}
+
+// IsManager는 사용자가 프로젝트 관리자인지 확인합니다.
+func (s *projectMemberService) IsManager(projectID, userID uint) (bool, error) {
+	return s.projectMemberRepo.IsManager(projectID, userID)
 }
