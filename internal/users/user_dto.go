@@ -8,8 +8,8 @@ type SignUpRequest struct {
 	Name  string `json:"name"`
 }
 
-// ToUser는 CreateUserRequest를 User로 변환하는 메서드
-func (r *SignUpRequest) ToUser() *model.User {
+// ToModel는 CreateUserRequest를 User로 변환하는 메서드
+func (r *SignUpRequest) ToModel() *model.User {
 	return &model.User{
 		Email: r.Email,
 		Name:  r.Name,
@@ -28,8 +28,8 @@ type UserResponse struct {
 	Name  string `json:"name"`
 }
 
-// ToUserResponse는 User를 UserResponse로 변환하는 메서드
-func ToUserResponse(user *model.User) *UserResponse {
+// ToModelResponse는 User를 UserResponse로 변환하는 메서드
+func ToModelResponse(user *model.User) *UserResponse {
 	if user == nil {
 		return nil
 	}

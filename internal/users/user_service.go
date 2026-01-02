@@ -22,7 +22,7 @@ func NewUserService(userRepo UserRepository) UserService {
 
 // CreateUser는 새로운 사용자를 생성합니다.
 func (s *userService) CreateUser(req SignUpRequest) error {
-	user := req.ToUser()
+	user := req.ToModel()
 	return s.userRepo.Create(user)
 }
 

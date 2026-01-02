@@ -80,7 +80,7 @@ func (h *userHandler) SignIn(c *gin.Context) {
 
 	response.RespondOK(c, gin.H{
 		"token": token,
-		"user":  ToUserResponse(user),
+		"user":  ToModelResponse(user),
 	})
 }
 
