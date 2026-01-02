@@ -16,13 +16,15 @@ type ProjectHandler interface {
 
 // projectHandler는 ProjectHandler를 구현하는 구조체입니다.
 type projectHandler struct {
-	projectService ProjectService
+	projectService       ProjectService
+	projectMemberService ProjectMemberService
 }
 
 // NewProjectHandler는 새로운 ProjectHandler를 생성합니다.
-func NewProjectHandler(projectService ProjectService) ProjectHandler {
+func NewProjectHandler(projectService ProjectService, projectMemberService ProjectMemberService) ProjectHandler {
 	return &projectHandler{
-		projectService: projectService,
+		projectService:       projectService,
+		projectMemberService: projectMemberService,
 	}
 }
 

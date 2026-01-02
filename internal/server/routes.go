@@ -19,8 +19,9 @@ func (s *server) RegisterRoutes() {
 
 	projectRepo := projects.NewProjectRepository(db)
 	projectMemberRepo := projects.NewProjectMemberRepository(db)
-	projectSer := projects.NewProjectService(projectRepo, projectMemberRepo)
-	projectHan := projects.NewProjectHandler(projectSer)
+	projectSer := projects.NewProjectService(projectRepo)
+	projectMemberSer := projects.NewProjectMemberService(projectMemberRepo)
+	projectHan := projects.NewProjectHandler(projectSer, projectMemberSer)
 
 	v1 := s.engine.Group("/api/v1")
 
