@@ -2,22 +2,22 @@ package users
 
 import "github.com/jhphon0730/action_manager/internal/model"
 
-// CreateUserRequest는 사용자를 생성하기 위한 요청
-type CreateUserRequest struct {
+// SignUpRequest 사용자를 생성하기 위한 요청
+type SignUpRequest struct {
 	Email string `json:"email"`
 	Name  string `json:"name"`
 }
 
 // ToUser는 CreateUserRequest를 User로 변환하는 메서드
-func (r *CreateUserRequest) ToUser() *model.User {
+func (r *SignUpRequest) ToUser() *model.User {
 	return &model.User{
 		Email: r.Email,
 		Name:  r.Name,
 	}
 }
 
-// LoginRequest는 사용자를 로그인하기 위한 요청
-type LoginRequest struct {
+// SignInRequest 사용자를 로그인하기 위한 요청
+type SignInRequest struct {
 	Email string `json:"email"`
 }
 

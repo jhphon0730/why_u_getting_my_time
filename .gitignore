@@ -1,1 +1,10 @@
 .env
+
+.build
+.dist
+.node_modules
+
+.media
+.git
+
+.cache

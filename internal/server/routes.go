@@ -17,6 +17,7 @@ func (s *server) RegisterRoutes() {
 	usersGroup := v1.Group("/users")
 	{
 		usersGroup.POST("", userHan.SignUp)
+		usersGroup.POST("/login", userHan.SignIn)
 	}
 
 }
