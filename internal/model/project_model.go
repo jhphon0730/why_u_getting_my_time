@@ -2,6 +2,11 @@ package model
 
 import "time"
 
+const (
+	RoleManager = "MANAGER"
+	RoleMember  = "MEMBER"
+)
+
 type Project struct {
 	BaseModel
 	Name        string `gorm:"not null"`

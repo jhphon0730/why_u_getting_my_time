@@ -15,13 +15,15 @@ type ProjectService interface {
 
 // projectService는 프로젝트 관련 서비스 구현체입니다.
 type projectService struct {
-	projectRepo ProjectRepository
+	projectRepo       ProjectRepository
+	projectMemberRepo ProjectMemberRepository
 }
 
 // NewProjectService는 프로젝트 서비스를 생성합니다.
-func NewProjectService(projectRepo ProjectRepository) ProjectService {
+func NewProjectService(projectRepo ProjectRepository, projectMemberRepo ProjectMemberRepository) ProjectService {
 	return &projectService{
-		projectRepo: projectRepo,
+		projectRepo:       projectRepo,
+		projectMemberRepo: projectMemberRepo,
 	}
 }
 
@@ -37,7 +39,7 @@ func (s *projectService) Create(req *CreateProjectRequest, userID uint) error {
 		member := &model.ProjectMember{
 			ProjectID:   project.ID,
 			UserID:      userID,
-			ProjectRole: "MANAGER",
+			ProjectRole: model.RoleManager,
 			JoinedAt:    time.Now(),
 		}
 
