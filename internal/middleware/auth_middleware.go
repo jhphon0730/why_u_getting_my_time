@@ -20,7 +20,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		// 쿠키에서 token 추출
 		token, err := c.Cookie("token")
 		if err != nil || token == "" {
-			response.RespondError(c, http.StatusUnauthorized, "unauthorized")
+			response.RespondError(c, http.StatusUnauthorized, "사용자를 찾을 수 없습니다.")
 			c.Abort()
 			return
 		}
@@ -28,7 +28,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		// JWT 검증
 		claims, err := auth.ValidateJWTToken(token)
 		if err != nil {
-			response.RespondError(c, http.StatusUnauthorized, "invalid token")
+			response.RespondError(c, http.StatusUnauthorized, "유효하지 않은 요청입니다.")
 			c.Abort()
 			return
 		}

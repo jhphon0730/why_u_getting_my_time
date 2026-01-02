@@ -12,6 +12,7 @@ import (
 type UserHandler interface {
 	SignUp(c *gin.Context)
 	SignIn(c *gin.Context)
+	SignOut(c *gin.Context)
 }
 
 // userHandler는 사용자 관련 요청을 처리하는 구조체입니다.
@@ -80,5 +81,20 @@ func (h *userHandler) SignIn(c *gin.Context) {
 	response.RespondOK(c, gin.H{
 		"token": token,
 		"user":  ToUserResponse(user),
+	})
+}
+
+// SignOut 함수는 사용자를 로그아웃합니다.
+func (h *userHandler) SignOut(c *gin.Context) {
+	token, err := c.Cookie("token")
+	if err != nil || token == "" {
+		response.RespondError(c, http.StatusUnauthorized, ErrUnauthorized.Error())
+		return
+	}
+
+	c.SetCookie("token", "", -1, "/", "", false, true)
+
+	response.RespondOK(c, gin.H{
+		"message": "Logged out successfully",
 	})
 }

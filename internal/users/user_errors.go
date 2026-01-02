@@ -7,4 +7,5 @@ var (
 	ErrDuplicateEmail = errors.New("이미 존재하는 이메일입니다.")
 	ErrNotFound       = errors.New("사용자를 찾을 수 없습니다.")
 	ErrInvalidRequest = errors.New("잘못된 요청입니다.")
+	ErrUnauthorized   = errors.New("인증되지 않은 사용자입니다.")
 )
