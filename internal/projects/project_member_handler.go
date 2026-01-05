@@ -11,6 +11,8 @@ import (
 // ProjectMemberHandler는 프로젝트 멤버를 관리하는 인터페이스입니다.
 type ProjectMemberHandler interface {
 	AddMember(c *gin.Context)
+	UpdateRoleToManager(c *gin.Context)
+	UpdateRoleToMember(c *gin.Context)
 	DeleteMember(c *gin.Context)
 	FindByProjectID(c *gin.Context)
 }
@@ -51,6 +53,46 @@ func (h *projectMemberHandler) AddMember(c *gin.Context) {
 		return
 	}
 
+	response.RespondCreated(c, nil)
+}
+
+// UpdateRoleToManager는 프로젝트 멤버의 역할을 관리자로 업데이트합니다.
+func (h *projectMemberHandler) UpdateRoleToManager(c *gin.Context) {
+	projectID, exists := contextutils.GetProjectIDByParam(c)
+	if !exists {
+		response.RespondError(c, http.StatusBadRequest, ErrInvalidProjectID.Error())
+		return
+	}
+	userID, exists := contextutils.GetUserIDIDByParam(c)
+	if !exists {
+		response.RespondError(c, http.StatusBadRequest, ErrInvalidUserID.Error())
+		return
+	}
+
+	if err := h.projectMemberSer.UpdateRoleToManager(projectID, userID); err != nil {
+		response.RespondError(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	response.RespondCreated(c, nil)
+}
+
+// UpdateRoleToMember는 프로젝트 멤버의 역할을 멤버로 업데이트합니다.
+func (h *projectMemberHandler) UpdateRoleToMember(c *gin.Context) {
+	projectID, exists := contextutils.GetProjectIDByParam(c)
+	if !exists {
+		response.RespondError(c, http.StatusBadRequest, ErrInvalidProjectID.Error())
+		return
+	}
+	userID, exists := contextutils.GetUserIDIDByParam(c)
+	if !exists {
+		response.RespondError(c, http.StatusBadRequest, ErrInvalidUserID.Error())
+		return
+	}
+
+	if err := h.projectMemberSer.UpdateRoleToMember(projectID, userID); err != nil {
+		response.RespondError(c, http.StatusInternalServerError, err.Error())
+		return
+	}
 	response.RespondCreated(c, nil)
 }
 

@@ -10,6 +10,8 @@ type ProjectMemberRepository interface {
 	Create(projectMember *model.ProjectMember) error
 	FindByProjectID(projectID uint) ([]*model.ProjectMember, error)
 	FindByProjectIDAndUserID(projectID, userID uint) (*model.ProjectMember, error)
+	UpdateRoleToManager(projectID, userID uint) error
+	UpdateRoleToMember(projectID, userID uint) error
 	Delete(projectID, userID uint) error
 	IsMember(projectID, userID uint) (bool, error)
 	IsManager(projectID, userID uint) (bool, error)
@@ -37,6 +39,16 @@ func (r *projectMemberRepository) FindByProjectID(projectID uint) ([]*model.Proj
 		return nil, err
 	}
 	return projectMembers, nil
+}
+
+// UpdateRoleToManager 함수는 프로젝트 멤버의 역할을 관리자로 업데이트합니다.
+func (r *projectMemberRepository) UpdateRoleToManager(projectID, userID uint) error {
+	return r.db.Model(&model.ProjectMember{}).Where("project_id = ? AND user_id = ?", projectID, userID).Update("project_role", model.RoleManager).Error
+}
+
+// UpdateRoleToMember 함수는 프로젝트 멤버의 역할을 멤버로 업데이트합니다.
+func (r *projectMemberRepository) UpdateRoleToMember(projectID, userID uint) error {
+	return r.db.Model(&model.ProjectMember{}).Where("project_id = ? AND user_id = ?", projectID, userID).Update("project_role", model.RoleMember).Error
 }
 
 // Delete는 프로젝트 멤버를 삭제합니다.
