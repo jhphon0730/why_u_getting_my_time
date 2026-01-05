@@ -17,7 +17,18 @@ func GetUserID(c *gin.Context) (uint, bool) {
 	return userIDValue.(uint), true
 }
 
-// GetProjectID 함수는 프로젝트 ID를 가져옵니다.
+// GetUserIDIDByParam 함수는 사용자 ID를 가져옵니다.
+func GetUserIDIDByParam(c *gin.Context) (uint, bool) {
+	userIDParam := c.Param("userID")
+	userID, err := strconv.ParseUint(userIDParam, 10, 64)
+	if err != nil {
+		return 0, false
+	}
+
+	return uint(userID), true
+}
+
+// GetProjectIDByParam 함수는 프로젝트 ID를 가져옵니다.
 func GetProjectIDByParam(c *gin.Context) (uint, bool) {
 	projectIDParam := c.Param("projectID")
 	projectID, err := strconv.ParseUint(projectIDParam, 10, 64)

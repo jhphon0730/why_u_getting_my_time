@@ -29,10 +29,13 @@ func NewProjectMemberHandler(projectMemberSer ProjectMemberService) ProjectMembe
 // CreateMember는 프로젝트 멤버를 생성합니다.
 func (h *projectMemberHandler) AddMember(c *gin.Context) {
 	var createMemberRequest CreateProjectMemberRequest
-	if err := c.ShouldBindJSON(&createMemberRequest); err != nil {
-		response.RespondError(c, http.StatusBadRequest, ErrInvalidRequest.Error())
+
+	userID, ok := contextutils.GetUserIDIDByParam(c)
+	if !ok {
+		response.RespondError(c, http.StatusBadRequest, ErrInvalidUserID.Error())
 		return
 	}
+	createMemberRequest.UserID = userID
 
 	// checked middleware
 	projectID, _ := contextutils.GetProjectIDByParam(c)
