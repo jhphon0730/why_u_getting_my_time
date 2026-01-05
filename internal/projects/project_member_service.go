@@ -21,6 +21,10 @@ func NewProjectMemberService(projectMemberRepo ProjectMemberRepository) ProjectM
 
 // Create 프로젝트 멤버를 추가합니다.
 func (s *projectMemberService) Create(req *CreateProjectMemberRequest) error {
+	if exists, _ := s.projectMemberRepo.IsMember(req.ProjectID, req.UserID); exists {
+		return ErrAlreadyMember
+	}
+
 	project := req.ToModel()
 	return s.projectMemberRepo.Create(project)
 }

@@ -38,6 +38,10 @@ func (h *projectMemberHandler) CreateMember(c *gin.Context) {
 	createMemberRequest.ProjectID = projectID
 
 	if err := h.projectMemberSer.Create(&createMemberRequest); err != nil {
+		if err == ErrAlreadyMember {
+			response.RespondError(c, http.StatusConflict, ErrAlreadyMember.Error())
+			return
+		}
 		response.RespondError(c, http.StatusInternalServerError, err.Error())
 		return
 	}
