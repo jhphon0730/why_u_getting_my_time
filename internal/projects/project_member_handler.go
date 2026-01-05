@@ -10,7 +10,8 @@ import (
 
 // ProjectMemberHandler는 프로젝트 멤버를 관리하는 인터페이스입니다.
 type ProjectMemberHandler interface {
-	CreateMember(c *gin.Context)
+	AddMember(c *gin.Context)
+	FindByProjectID(c *gin.Context)
 }
 
 // ProjectMemberHandler는 프로젝트 멤버를 관리하는 구현체입니다.
@@ -26,7 +27,7 @@ func NewProjectMemberHandler(projectMemberSer ProjectMemberService) ProjectMembe
 }
 
 // CreateMember는 프로젝트 멤버를 생성합니다.
-func (h *projectMemberHandler) CreateMember(c *gin.Context) {
+func (h *projectMemberHandler) AddMember(c *gin.Context) {
 	var createMemberRequest CreateProjectMemberRequest
 	if err := c.ShouldBindJSON(&createMemberRequest); err != nil {
 		response.RespondError(c, http.StatusBadRequest, ErrInvalidRequest.Error())
@@ -47,4 +48,19 @@ func (h *projectMemberHandler) CreateMember(c *gin.Context) {
 	}
 
 	response.RespondCreated(c, nil)
+}
+
+// FindByProjectID는 프로젝트 멤버 목록을 조회합니다.
+func (h *projectMemberHandler) FindByProjectID(c *gin.Context) {
+	projectID, _ := contextutils.GetProjectIDByParam(c)
+
+	members, err := h.projectMemberSer.FindByProjectID(projectID)
+	if err != nil {
+		response.RespondError(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	response.RespondOK(c, gin.H{
+		"members": ToModelMemberResponseList(members),
+	})
 }

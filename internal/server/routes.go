@@ -44,9 +44,10 @@ func (s *server) RegisterRoutes() {
 		projectGroup.GET("", projectHan.GetAllProjects)
 
 		/* PROJECT MEMBER */
-		projectMemberGroup := projectGroup.Group("/members")
+		projectMemberGroup := projectGroup.Group("/members/:projectID")
 		{
-			projectMemberGroup.POST("/:projectID", projectmw.RequireProjectManager(projectMemberSer), projectMemberHan.CreateMember)
+			projectMemberGroup.POST("", projectmw.RequireProjectManager(projectMemberSer), projectMemberHan.AddMember)
+			projectMemberGroup.GET("", projectmw.RequireProjectMember(projectMemberSer), projectMemberHan.FindByProjectID)
 		}
 	}
 

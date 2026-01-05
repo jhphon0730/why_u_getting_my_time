@@ -8,6 +8,7 @@ import (
 // ProjectMemberRepository는 프로젝트 멤버 관련 데이터베이스 작업을 수행하는 인터페이스입니다.
 type ProjectMemberRepository interface {
 	Create(projectMember *model.ProjectMember) error
+	FindByProjectID(projectID uint) ([]*model.ProjectMember, error)
 	FindByProjectIDAndUserID(projectID, userID uint) (*model.ProjectMember, error)
 	IsMember(projectID, userID uint) (bool, error)
 	IsManager(projectID, userID uint) (bool, error)
@@ -26,6 +27,14 @@ func NewProjectMemberRepository(db *gorm.DB) ProjectMemberRepository {
 // Create는 프로젝트 멤버를 생성합니다.
 func (r *projectMemberRepository) Create(projectMember *model.ProjectMember) error {
 	return r.db.Create(projectMember).Error
+}
+
+func (r *projectMemberRepository) FindByProjectID(projectID uint) ([]*model.ProjectMember, error) {
+	var projectMembers []*model.ProjectMember
+	if err := r.db.Where("project_id = ?", projectID).Find(&projectMembers).Error; err != nil {
+		return nil, err
+	}
+	return projectMembers, nil
 }
 
 // FindByProjectIDAndUserID는 프로젝트 ID와 사용자 ID를 기반으로 프로젝트 멤버를 찾습니다.
