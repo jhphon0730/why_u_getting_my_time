@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -21,6 +22,7 @@ func RequireProjectManager(projectMemberService projects.ProjectMemberService) g
 
 		projectID, ok := contextutils.GetProjectIDByParam(c)
 		if !ok {
+			log.Println(ok, projectID)
 			response.RespondError(c, http.StatusUnauthorized, UnauthorizedProject.Error())
 			c.Abort()
 			return

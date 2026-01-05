@@ -6,6 +6,7 @@ import (
 	"github.com/jhphon0730/action_manager/internal/middleware"
 	authmw "github.com/jhphon0730/action_manager/internal/middleware"
 	"github.com/jhphon0730/action_manager/internal/projects"
+	projectmw "github.com/jhphon0730/action_manager/internal/projects/middleware"
 	"github.com/jhphon0730/action_manager/internal/response"
 	"github.com/jhphon0730/action_manager/internal/users"
 )
@@ -23,6 +24,7 @@ func (s *server) RegisterRoutes() {
 	projectSer := projects.NewProjectService(projectRepo)
 	projectMemberSer := projects.NewProjectMemberService(projectMemberRepo)
 	projectHan := projects.NewProjectHandler(projectSer, projectMemberSer)
+	projectMemberHan := projects.NewProjectMemberHandler(projectMemberSer)
 
 	v1 := s.engine.Group("/api/v1")
 
@@ -40,6 +42,12 @@ func (s *server) RegisterRoutes() {
 	{
 		projectGroup.POST("", projectHan.CreateProject)
 		projectGroup.GET("", projectHan.GetAllProjects)
+
+		/* PROJECT MEMBER */
+		projectMemberGroup := projectGroup.Group("/members")
+		{
+			projectMemberGroup.POST("/:projectID", projectmw.RequireProjectManager(projectMemberSer), projectMemberHan.CreateMember)
+		}
 	}
 
 	/* PING TEST */
