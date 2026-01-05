@@ -10,6 +10,7 @@ type ProjectMemberRepository interface {
 	Create(projectMember *model.ProjectMember) error
 	FindByProjectID(projectID uint) ([]*model.ProjectMember, error)
 	FindByProjectIDAndUserID(projectID, userID uint) (*model.ProjectMember, error)
+	Delete(projectID, userID uint) error
 	IsMember(projectID, userID uint) (bool, error)
 	IsManager(projectID, userID uint) (bool, error)
 }
@@ -29,12 +30,18 @@ func (r *projectMemberRepository) Create(projectMember *model.ProjectMember) err
 	return r.db.Create(projectMember).Error
 }
 
+// FindByProjectID는 프로젝트 ID를 기반으로 프로젝트 멤버 목록을 찾습니다.
 func (r *projectMemberRepository) FindByProjectID(projectID uint) ([]*model.ProjectMember, error) {
 	var projectMembers []*model.ProjectMember
 	if err := r.db.Where("project_id = ?", projectID).Find(&projectMembers).Error; err != nil {
 		return nil, err
 	}
 	return projectMembers, nil
+}
+
+// Delete는 프로젝트 멤버를 삭제합니다.
+func (r *projectMemberRepository) Delete(projectID, userID uint) error {
+	return r.db.Where("project_id = ? AND user_id = ?", projectID, userID).Delete(&model.ProjectMember{}).Error
 }
 
 // FindByProjectIDAndUserID는 프로젝트 ID와 사용자 ID를 기반으로 프로젝트 멤버를 찾습니다.

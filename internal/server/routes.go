@@ -47,6 +47,7 @@ func (s *server) RegisterRoutes() {
 		projectMemberGroup := projectGroup.Group("/members/:projectID")
 		{
 			projectMemberGroup.POST("/:userID", projectmw.RequireProjectManager(projectMemberSer), projectMemberHan.AddMember)
+			projectMemberGroup.DELETE("/:userID", projectmw.RequireProjectManager(projectMemberSer), projectMemberHan.DeleteMember)
 			projectMemberGroup.GET("", projectmw.RequireProjectMember(projectMemberSer), projectMemberHan.FindByProjectID)
 		}
 	}

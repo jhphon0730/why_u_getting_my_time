@@ -39,3 +39,8 @@ func RespondOK(c *gin.Context, data interface{}) {
 func RespondCreated(c *gin.Context, data interface{}) {
 	RespondSuccess(c, http.StatusCreated, data)
 }
+
+// RespondNoContent는 204 No Content 응답
+func RespondNoContent(c *gin.Context) {
+	c.Status(http.StatusNoContent)
+}

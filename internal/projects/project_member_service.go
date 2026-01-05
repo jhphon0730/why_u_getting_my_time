@@ -6,6 +6,7 @@ import "github.com/jhphon0730/action_manager/internal/model"
 type ProjectMemberService interface {
 	Create(req *CreateProjectMemberRequest) error
 	FindByProjectID(projectID uint) ([]*model.ProjectMember, error)
+	Delete(projectID, userID uint) error
 	IsMember(projectID, userID uint) (bool, error)
 	IsManager(projectID, userID uint) (bool, error)
 }
@@ -35,6 +36,11 @@ func (s *projectMemberService) Create(req *CreateProjectMemberRequest) error {
 // FindByProjectID 프로젝트에 속한 멤버 목록을 조회합니다.
 func (s *projectMemberService) FindByProjectID(projectID uint) ([]*model.ProjectMember, error) {
 	return s.projectMemberRepo.FindByProjectID(projectID)
+}
+
+// Delete 프로젝트 멤버를 삭제합니다.
+func (s *projectMemberService) Delete(projectID, userID uint) error {
+	return s.projectMemberRepo.Delete(projectID, userID)
 }
 
 // IsMember는 사용자가 프로젝트에 멤버인지 확인합니다.

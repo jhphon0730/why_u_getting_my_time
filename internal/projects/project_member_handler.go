@@ -11,6 +11,7 @@ import (
 // ProjectMemberHandler는 프로젝트 멤버를 관리하는 인터페이스입니다.
 type ProjectMemberHandler interface {
 	AddMember(c *gin.Context)
+	DeleteMember(c *gin.Context)
 	FindByProjectID(c *gin.Context)
 }
 
@@ -51,6 +52,27 @@ func (h *projectMemberHandler) AddMember(c *gin.Context) {
 	}
 
 	response.RespondCreated(c, nil)
+}
+
+// DeleteMember는 프로젝트 멤버를 삭제합니다.
+func (h *projectMemberHandler) DeleteMember(c *gin.Context) {
+	projectID, exists := contextutils.GetProjectIDByParam(c)
+	if !exists {
+		response.RespondError(c, http.StatusBadRequest, ErrInvalidProjectID.Error())
+		return
+	}
+	userID, exists := contextutils.GetUserIDIDByParam(c)
+	if !exists {
+		response.RespondError(c, http.StatusBadRequest, ErrInvalidUserID.Error())
+		return
+	}
+
+	if err := h.projectMemberSer.Delete(projectID, userID); err != nil {
+		response.RespondError(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	response.RespondNoContent(c)
 }
 
 // FindByProjectID는 프로젝트 멤버 목록을 조회합니다.
