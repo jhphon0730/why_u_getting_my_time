@@ -47,11 +47,65 @@ func (s *projectMemberService) UpdateRoleToManager(projectID, userID uint) error
 
 // UpdateRoleToMember 함수는 프로젝트 멤버의 역할을 멤버로 업데이트합니다.
 func (s *projectMemberService) UpdateRoleToMember(projectID, userID uint) error {
+	// 프로젝트에 해당하는 사용자인지 확인
+	isMember, err := s.projectMemberRepo.IsMember(projectID, userID)
+	if err != nil {
+		return err
+	}
+
+	if !isMember {
+		return ErrNotMember
+	}
+
+	isManager, err := s.projectMemberRepo.IsManager(projectID, userID)
+	if err != nil {
+		return err
+	}
+
+	// 매니저의 경우 마지막 매니저인이 확인
+	if isManager {
+		memberCtn, err := s.projectMemberRepo.CountManagers(projectID)
+		if err != nil {
+			return err
+		}
+
+		if memberCtn == 1 {
+			return ErrLastManager
+		}
+	}
+
 	return s.projectMemberRepo.UpdateRoleToMember(projectID, userID)
 }
 
 // Delete 프로젝트 멤버를 삭제합니다.
 func (s *projectMemberService) Delete(projectID, userID uint) error {
+	// 프로젝트에 해당하는 사용자인지 확인
+	isMember, err := s.projectMemberRepo.IsMember(projectID, userID)
+	if err != nil {
+		return err
+	}
+
+	if !isMember {
+		return ErrNotMember
+	}
+
+	isManager, err := s.projectMemberRepo.IsManager(projectID, userID)
+	if err != nil {
+		return err
+	}
+
+	// 매니저의 경우 마지막 매니저인이 확인
+	if isManager {
+		memberCtn, err := s.projectMemberRepo.CountManagers(projectID)
+		if err != nil {
+			return err
+		}
+
+		if memberCtn == 1 {
+			return ErrLastManager
+		}
+	}
+
 	return s.projectMemberRepo.Delete(projectID, userID)
 }
 

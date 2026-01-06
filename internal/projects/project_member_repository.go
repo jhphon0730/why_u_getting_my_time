@@ -15,6 +15,7 @@ type ProjectMemberRepository interface {
 	Delete(projectID, userID uint) error
 	IsMember(projectID, userID uint) (bool, error)
 	IsManager(projectID, userID uint) (bool, error)
+	CountManagers(projectID uint) (int64, error)
 }
 
 // projectMemberRepository는 프로젝트 멤버 관련 데이터베이스 작업을 수행하는 구현체입니다.
@@ -93,4 +94,17 @@ func (r *projectMemberRepository) IsManager(projectID, userID uint) (bool, error
 		return true, nil
 	}
 	return false, nil
+}
+
+// CountManagers 함수는 프로젝트에 해당하는 매니저의 수를 반환함
+func (r *projectMemberRepository) CountManagers(projectID uint) (int64, error) {
+	var count int64
+	if err := r.db.Model(&model.ProjectMember{}).Where("project_id = ? AND project_role = ?", projectID, model.RoleManager).Count(&count).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return 0, nil
+		}
+
+		return 0, err
+	}
+	return count, nil
 }

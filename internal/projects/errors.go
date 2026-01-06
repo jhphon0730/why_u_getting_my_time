@@ -11,4 +11,7 @@ var (
 
 	ErrInvalidUserID    = errors.New("올바른 사용자 ID가 아닙니다.")
 	ErrInvalidProjectID = errors.New("올바른 프로젝트 ID가 아닙니다.")
+
+	ErrLastManager = errors.New("마지막 관리자는 삭제할 수 없습니다.")
+	ErrNotMember   = errors.New("프로젝트에 참여하지 않은 사용자입니다.")
 )
