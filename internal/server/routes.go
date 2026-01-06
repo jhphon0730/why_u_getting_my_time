@@ -8,6 +8,7 @@ import (
 	"github.com/jhphon0730/action_manager/internal/projects"
 	projectmw "github.com/jhphon0730/action_manager/internal/projects/middleware"
 	"github.com/jhphon0730/action_manager/internal/response"
+	"github.com/jhphon0730/action_manager/internal/teststatus"
 	"github.com/jhphon0730/action_manager/internal/users"
 )
 
@@ -19,9 +20,12 @@ func (s *server) RegisterRoutes() {
 	userSer := users.NewUserService(userRepo)
 	userHan := users.NewUserHandler(userSer)
 
+	teststatusRepo := teststatus.NewTestStatusRepository(db)
+	teststatusSer := teststatus.NewTestStatusService(teststatusRepo)
+
 	projectRepo := projects.NewProjectRepository(db)
 	projectMemberRepo := projects.NewProjectMemberRepository(db)
-	projectSer := projects.NewProjectService(projectRepo)
+	projectSer := projects.NewProjectService(projectRepo, teststatusSer)
 	projectMemberSer := projects.NewProjectMemberService(projectMemberRepo)
 	projectHan := projects.NewProjectHandler(projectSer, projectMemberSer)
 	projectMemberHan := projects.NewProjectMemberHandler(projectMemberSer)

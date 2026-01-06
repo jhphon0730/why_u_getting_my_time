@@ -12,6 +12,9 @@ type TestStatus struct {
 	Project Project
 }
 
+// 테스트 케이스 상태 기본 데이터
+var DEFAULT_TESTSTATUS_DATA []string = []string{"TODO", "IN_PROGRESS", "VERIFYING", "DONE", "FAIL"}
+
 // 테스트 케이스 모델
 type TestCase struct {
 	BaseModel
