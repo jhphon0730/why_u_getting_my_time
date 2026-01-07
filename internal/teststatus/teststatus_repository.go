@@ -10,6 +10,7 @@ type TestStatusRepository interface {
 	WithTx(tx *gorm.DB) TestStatusRepository
 
 	CreateDefault(projectID uint) error
+	Create(status *model.TestStatus) error
 	FindByProjectID(projectID uint) ([]*model.TestStatus, error)
 }
 
@@ -47,6 +48,11 @@ func (r *testStatusRepository) CreateDefault(projectID uint) error {
 	}
 
 	return nil
+}
+
+// Create 함수는 새로운 테스트 상태를 생성합니다.
+func (r *testStatusRepository) Create(status *model.TestStatus) error {
+	return r.db.Create(status).Error
 }
 
 // FindByProjectID 함수는 프로젝트 ID를 기반으로 테스트 상태를 조회합니다.
