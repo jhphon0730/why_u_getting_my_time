@@ -14,4 +14,7 @@ var (
 
 	ErrLastManager = errors.New("마지막 관리자는 삭제할 수 없습니다.")
 	ErrNotMember   = errors.New("프로젝트에 참여하지 않은 사용자입니다.")
+	ErrNotFound    = errors.New("프로젝트를 찾을 수 없습니다.")
+
+	ErrNotFoundProjectMember = errors.New("프로젝트 멤버를 찾을 수 없습니다.")
 )

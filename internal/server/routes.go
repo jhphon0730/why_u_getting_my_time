@@ -30,6 +30,10 @@ func (s *server) RegisterRoutes() {
 	projectHan := projects.NewProjectHandler(projectSer, projectMemberSer)
 	projectMemberHan := projects.NewProjectMemberHandler(projectMemberSer)
 
+	testStatusRepo := teststatus.NewTestStatusRepository(db)
+	testStatusSer := teststatus.NewTestStatusService(testStatusRepo)
+	testStatusHan := teststatus.NewTestStatusHandler(testStatusSer)
+
 	v1 := s.engine.Group("/api/v1")
 
 	/* USER & AUTH */
@@ -55,6 +59,12 @@ func (s *server) RegisterRoutes() {
 			projectMemberGroup.GET("", projectmw.RequireProjectMember(projectMemberSer), projectMemberHan.FindByProjectID)
 			projectMemberGroup.PATCH("/:userID/manager", projectmw.RequireProjectManager(projectMemberSer), projectMemberHan.UpdateRoleToManager)
 			projectMemberGroup.PATCH("/:userID/member", projectmw.RequireProjectManager(projectMemberSer), projectMemberHan.UpdateRoleToMember)
+		}
+
+		/* TEST STATUS */
+		testStatusGroup := projectGroup.Group("/test-status/:projectID")
+		{
+			testStatusGroup.GET("", projectmw.RequireProjectMember(projectMemberSer), testStatusHan.FindByProjectID)
 		}
 	}
 
