@@ -12,6 +12,7 @@ import (
 type TestStatusHandler interface {
 	Create(c *gin.Context)
 	FindByProjectID(c *gin.Context)
+	Delete(c *gin.Context)
 }
 
 // testStatusHandler 구조체는 TestStatusHandler 인터페이스를 구현합니다.
@@ -59,4 +60,21 @@ func (h *testStatusHandler) FindByProjectID(c *gin.Context) {
 	response.RespondOK(c, gin.H{
 		"test_status": ToModelTestStatusResponseList(status),
 	})
+}
+
+// Delete 함수는 특정 테스트 상태를 삭제합니다.
+func (h *testStatusHandler) Delete(c *gin.Context) {
+	projectID, _ := contextutils.GetProjectIDByParam(c)
+	statusID, err := contextutils.GetStatusIDByParam(c)
+	if err != nil {
+		response.RespondError(c, http.StatusBadRequest, ErrInvalidRequest.Error())
+	}
+
+	err = h.testStatusService.Delete(projectID, statusID)
+	if err != nil {
+		response.RespondError(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	response.RespondNoContent(c)
 }

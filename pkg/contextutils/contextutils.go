@@ -38,3 +38,14 @@ func GetProjectIDByParam(c *gin.Context) (uint, bool) {
 
 	return uint(projectID), true
 }
+
+// GetStatusIDByParam 함수는 상태 ID를 가져옵니다.
+func GetStatusIDByParam(c *gin.Context) (uint, error) {
+	statusIDParam := c.Param("statusID")
+	statusID, err := strconv.ParseUint(statusIDParam, 10, 64)
+	if err != nil {
+		return 0, err
+	}
+
+	return uint(statusID), nil
+}

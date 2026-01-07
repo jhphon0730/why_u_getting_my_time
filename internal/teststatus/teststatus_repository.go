@@ -11,6 +11,7 @@ type TestStatusRepository interface {
 
 	CreateDefault(projectID uint) error
 	Create(status *model.TestStatus) error
+	Delete(projectID, statusID uint) error
 	FindByProjectID(projectID uint) ([]*model.TestStatus, error)
 }
 
@@ -63,4 +64,9 @@ func (r *testStatusRepository) FindByProjectID(projectID uint) ([]*model.TestSta
 	}
 
 	return testCases, nil
+}
+
+// Delete 함수는 프로젝트 ID와 상태 ID를 기반으로 테스트 상태를 삭제합니다.
+func (r *testStatusRepository) Delete(projectID, statusID uint) error {
+	return r.db.Where("project_id = ? AND id = ?", projectID, statusID).Delete(&model.TestStatus{}).Error
 }
