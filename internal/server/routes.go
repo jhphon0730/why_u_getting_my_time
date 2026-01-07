@@ -66,7 +66,7 @@ func (s *server) RegisterRoutes() {
 		{
 			testStatusGroup.GET("", projectmw.RequireProjectMember(projectMemberSer), testStatusHan.FindByProjectID)
 			testStatusGroup.POST("", projectmw.RequireProjectManager(projectMemberSer), testStatusHan.Create)
-
+			testStatusGroup.DELETE("/:statusID", projectmw.RequireProjectManager(projectMemberSer), testStatusHan.Delete)
 		}
 	}
 
