@@ -7,6 +7,8 @@ import (
 
 // TestCaseRepository 는 테스트 케이스를 관리하는 인터페이스입니다.
 type TestCaseRepository interface {
+	WithTx(fn func(tx *gorm.DB) error) error
+
 	Create(testcase *model.TestCase) error
 }
 
@@ -20,6 +22,11 @@ func NewTestCaseRepository(db *gorm.DB) TestCaseRepository {
 	return &testCaseRepository{
 		db: db,
 	}
+}
+
+// WithTx는 트랜잭션을 사용하여 함수를 실행하는 함수입니다.
+func (r *testCaseRepository) WithTx(fn func(tx *gorm.DB) error) error {
+	return r.db.Transaction(fn)
 }
 
 // Create 함수는 새로운 테스트 케이스를 생성합니다.

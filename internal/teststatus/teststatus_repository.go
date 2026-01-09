@@ -7,12 +7,13 @@ import (
 
 // TestStatusRepository는 테스트 상태를 관리하는 인터페이스입니다.
 type TestStatusRepository interface {
-	WithTx(tx *gorm.DB) TestStatusRepository
+	NewWithTx(tx *gorm.DB) TestStatusRepository
 
 	CreateDefault(projectID uint) error
 	Create(status *model.TestStatus) error
 	Delete(projectID, statusID uint) error
 	FindByProjectID(projectID uint) ([]*model.TestStatus, error)
+	IsProjectStatus(projectID, statusID uint) bool
 }
 
 // testStatusRepository는 테스트 상태를 관리하는 구현체입니다.
@@ -28,7 +29,7 @@ func NewTestStatusRepository(db *gorm.DB) TestStatusRepository {
 }
 
 // WithTx는 트랜잭션을 사용하여 새로운 TestStatusRepository 인스턴스를 생성합니다.
-func (r *testStatusRepository) WithTx(tx *gorm.DB) TestStatusRepository {
+func (r *testStatusRepository) NewWithTx(tx *gorm.DB) TestStatusRepository {
 	return &testStatusRepository{
 		db: tx,
 	}
@@ -69,4 +70,11 @@ func (r *testStatusRepository) FindByProjectID(projectID uint) ([]*model.TestSta
 // Delete 함수는 프로젝트 ID와 상태 ID를 기반으로 테스트 상태를 삭제합니다.
 func (r *testStatusRepository) Delete(projectID, statusID uint) error {
 	return r.db.Where("project_id = ? AND id = ?", projectID, statusID).Delete(&model.TestStatus{}).Error
+}
+
+// IsProjectStatus 함수는 프로젝트 ID와 상태 ID를 기반으로 테스트 상태가 존재하는지 확인합니다.
+func (r *testStatusRepository) IsProjectStatus(projectID, statusID uint) bool {
+	var count int64
+	r.db.Model(&model.TestStatus{}).Where("project_id = ? AND id = ?", projectID, statusID).Count(&count)
+	return count > 0
 }

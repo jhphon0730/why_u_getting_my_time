@@ -12,6 +12,7 @@ type TestStatusService interface {
 	Create(req *CreateTestStatusRequest) error
 	FindByProjectID(projectID uint) ([]*model.TestStatus, error)
 	Delete(projectID, statusID uint) error
+	IsProjectStatusTx(tx *gorm.DB, projectID, statusID uint) bool
 }
 
 // testStatusService는 테스트 상태를 관리하는 구현체입니다.
@@ -33,7 +34,7 @@ func (s *testStatusService) CreateDefault(projectID uint) error {
 
 // CreateDefaultTx는 기본 테스트 상태를 생성합니다.
 func (s *testStatusService) CreateDefaultTx(tx *gorm.DB, projectID uint) error {
-	return s.repo.WithTx(tx).CreateDefault(projectID)
+	return s.repo.NewWithTx(tx).CreateDefault(projectID)
 }
 
 // Create는 테스트 상태를 생성합니다.
@@ -51,4 +52,9 @@ func (s *testStatusService) FindByProjectID(projectID uint) ([]*model.TestStatus
 // Delete는 프로젝트 ID와 상태 ID에 해당하는 테스트 상태를 삭제합니다.
 func (s *testStatusService) Delete(projectID, statusID uint) error {
 	return s.repo.Delete(projectID, statusID)
+}
+
+// IsProjectStatus는 프로젝트 ID와 상태 ID에 해당하는 테스트 상태가 존재하는지 확인합니다.
+func (s *testStatusService) IsProjectStatusTx(tx *gorm.DB, projectID, statusID uint) bool {
+	return s.repo.NewWithTx(tx).IsProjectStatus(projectID, statusID)
 }
