@@ -34,4 +34,4 @@
 
 ## Test Case
 
-- Create
+- Create ( Check Status ID: O / Check Assigned User ID : X )
