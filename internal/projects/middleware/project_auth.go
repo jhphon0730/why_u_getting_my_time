@@ -36,7 +36,7 @@ func RequireProjectManager(projectMemberService projects.ProjectMemberService) g
 		}
 
 		if !isManager {
-			response.RespondError(c, http.StatusForbidden, PermissionRequired.Error())
+			response.RespondError(c, http.StatusForbidden, ProjectNotFound.Error())
 			c.Abort()
 			return
 		}

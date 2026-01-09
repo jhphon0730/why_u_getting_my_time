@@ -1,5 +1,11 @@
 # Progress
 
+## Middleware
+
+- AuthMiddleware
+- RequireProjectManager
+- RequireProjectMember
+
 ## Users
 
 - Sign up
@@ -21,7 +27,11 @@
 
 ## Test Status
 
-- Create Default
+- Create Default (프로젝트 생성 시에 기본 Status 생성)
 - FindByProjectID
 - Create
 - Delete
+
+## Test Case
+
+- Create

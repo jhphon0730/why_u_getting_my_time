@@ -8,6 +8,7 @@ import (
 	"github.com/jhphon0730/action_manager/internal/projects"
 	projectmw "github.com/jhphon0730/action_manager/internal/projects/middleware"
 	"github.com/jhphon0730/action_manager/internal/response"
+	"github.com/jhphon0730/action_manager/internal/testcases"
 	"github.com/jhphon0730/action_manager/internal/teststatus"
 	"github.com/jhphon0730/action_manager/internal/users"
 )
@@ -33,6 +34,10 @@ func (s *server) RegisterRoutes() {
 	testStatusRepo := teststatus.NewTestStatusRepository(db)
 	testStatusSer := teststatus.NewTestStatusService(testStatusRepo)
 	testStatusHan := teststatus.NewTestStatusHandler(testStatusSer)
+
+	testCaseRepo := testcases.NewTestCaseRepository(db)
+	testCaseSer := testcases.NewTestCaseService(testCaseRepo)
+	testCaseHan := testcases.NewTestCaseHandler(testCaseSer)
 
 	v1 := s.engine.Group("/api/v1")
 
@@ -67,6 +72,12 @@ func (s *server) RegisterRoutes() {
 			testStatusGroup.GET("", projectmw.RequireProjectMember(projectMemberSer), testStatusHan.FindByProjectID)
 			testStatusGroup.POST("", projectmw.RequireProjectManager(projectMemberSer), testStatusHan.Create)
 			testStatusGroup.DELETE("/:statusID", projectmw.RequireProjectManager(projectMemberSer), testStatusHan.Delete)
+		}
+
+		/* TEST CASE */
+		testCaseGroup := projectGroup.Group("/test-cases/:projectID")
+		{
+			testCaseGroup.POST("", projectmw.RequireProjectMember(projectMemberSer), testCaseHan.Create)
 		}
 	}
 
