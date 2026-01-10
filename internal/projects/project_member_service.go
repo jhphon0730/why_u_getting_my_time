@@ -1,6 +1,9 @@
 package projects
 
-import "github.com/jhphon0730/action_manager/internal/model"
+import (
+	"github.com/jhphon0730/action_manager/internal/model"
+	"gorm.io/gorm"
+)
 
 // ProjectMemberService는 프로젝트 멤버 관리를 위한 인터페이스입니다.
 type ProjectMemberService interface {
@@ -11,6 +14,8 @@ type ProjectMemberService interface {
 	Delete(projectID, userID uint) error
 	IsMember(projectID, userID uint) (bool, error)
 	IsManager(projectID, userID uint) (bool, error)
+
+	IsMemberTx(tx *gorm.DB, projectID, userID uint) (bool, error)
 }
 
 // NewProjectMemberService는 새로운 ProjectMemberService 인스턴스를 생성합니다.
@@ -117,4 +122,9 @@ func (s *projectMemberService) IsMember(projectID, userID uint) (bool, error) {
 // IsManager는 사용자가 프로젝트 관리자인지 확인합니다.
 func (s *projectMemberService) IsManager(projectID, userID uint) (bool, error) {
 	return s.projectMemberRepo.IsManager(projectID, userID)
+}
+
+// IsMember는 사용자가 프로젝트에 멤버인지 확인합니다.
+func (s *projectMemberService) IsMemberTx(tx *gorm.DB, projectID, userID uint) (bool, error) {
+	return s.projectMemberRepo.NewWithTx(tx).IsMember(projectID, userID)
 }

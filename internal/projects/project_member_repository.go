@@ -7,6 +7,8 @@ import (
 
 // ProjectMemberRepository는 프로젝트 멤버 관련 데이터베이스 작업을 수행하는 인터페이스입니다.
 type ProjectMemberRepository interface {
+	NewWithTx(tx *gorm.DB) ProjectMemberRepository
+
 	Create(projectMember *model.ProjectMember) error
 	FindByProjectID(projectID uint) ([]*model.ProjectMember, error)
 	FindByProjectIDAndUserID(projectID, userID uint) (*model.ProjectMember, error)
@@ -26,6 +28,11 @@ type projectMemberRepository struct {
 // NewProjectMemberRepository는 프로젝트 멤버 관련 데이터베이스 작업을 수행하는 인터페이스를 반환합니다.
 func NewProjectMemberRepository(db *gorm.DB) ProjectMemberRepository {
 	return &projectMemberRepository{db: db}
+}
+
+// NewWithTx는 트랜잭션을 사용하여 프로젝트 멤버 관련 데이터베이스 작업을 수행하는 인터페이스를 반환합니다.
+func (r *projectMemberRepository) NewWithTx(tx *gorm.DB) ProjectMemberRepository {
+	return &projectMemberRepository{db: tx}
 }
 
 // Create는 프로젝트 멤버를 생성합니다.

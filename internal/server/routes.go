@@ -36,7 +36,7 @@ func (s *server) RegisterRoutes() {
 	testStatusHan := teststatus.NewTestStatusHandler(testStatusSer)
 
 	testCaseRepo := testcases.NewTestCaseRepository(db)
-	testCaseSer := testcases.NewTestCaseService(testCaseRepo, testStatusSer)
+	testCaseSer := testcases.NewTestCaseService(testCaseRepo, testStatusSer, projectMemberSer)
 	testCaseHan := testcases.NewTestCaseHandler(testCaseSer)
 
 	v1 := s.engine.Group("/api/v1")
