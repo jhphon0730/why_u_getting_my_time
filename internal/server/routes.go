@@ -78,6 +78,7 @@ func (s *server) RegisterRoutes() {
 		testCaseGroup := projectGroup.Group("/test-cases/:projectID")
 		{
 			testCaseGroup.POST("", projectmw.RequireProjectMember(projectMemberSer), testCaseHan.Create)
+			testCaseGroup.GET("", projectmw.RequireProjectMember(projectMemberSer), testCaseHan.FindByProjectID)
 		}
 	}
 
@@ -89,5 +90,4 @@ func (s *server) RegisterRoutes() {
 			response.RespondSuccess(c, 200, "pong")
 		})
 	}
-
 }

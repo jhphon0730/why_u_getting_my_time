@@ -10,6 +10,7 @@ type TestCaseRepository interface {
 	WithTx(fn func(tx *gorm.DB) error) error
 
 	Create(testcase *model.TestCase) error
+	FindByProjectID(projectID uint) ([]*model.TestCase, error)
 }
 
 // TestCaseRepository 는 테스트 케이스를 관리하는 구현체입니다.
@@ -32,4 +33,11 @@ func (r *testCaseRepository) WithTx(fn func(tx *gorm.DB) error) error {
 // Create 함수는 새로운 테스트 케이스를 생성합니다.
 func (r *testCaseRepository) Create(testcase *model.TestCase) error {
 	return r.db.Create(testcase).Error
+}
+
+// FindByProjectID 함수는 프로젝트 ID에 해당하는 테스트 케이스를 찾습니다.
+func (r *testCaseRepository) FindByProjectID(projectID uint) ([]*model.TestCase, error) {
+	var testcases []*model.TestCase
+	err := r.db.Where("project_id = ?", projectID).Find(&testcases).Error
+	return testcases, err
 }

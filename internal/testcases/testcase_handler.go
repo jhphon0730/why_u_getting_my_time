@@ -11,6 +11,7 @@ import (
 // TestCaseHandler 는 테스트 케이스를 관리하는 인터페이스입니다.
 type TestCaseHandler interface {
 	Create(c *gin.Context)
+	FindByProjectID(c *gin.Context)
 }
 
 // TestCaseHandler 는 테스트 케이스를 관리하는 구현체입니다.
@@ -29,7 +30,7 @@ func NewTestCaseHandler(testCaseService TestCaseService) TestCaseHandler {
 func (h *testCaseHandler) Create(c *gin.Context) {
 	var req CreateTestCaseRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.RespondError(c, http.StatusBadRequest, ErrInvalidRequest.Error() + " / " + err.Error())
+		response.RespondError(c, http.StatusBadRequest, ErrInvalidRequest.Error()+" / "+err.Error())
 		return
 	}
 
@@ -43,4 +44,17 @@ func (h *testCaseHandler) Create(c *gin.Context) {
 	}
 
 	response.RespondCreated(c, nil)
+}
+
+// FindByProjectID 함수는 특정 프로젝트의 테스트 케이스를 조회합니다.
+func (h *testCaseHandler) FindByProjectID(c *gin.Context) {
+	projectID, _ := contextutils.GetProjectIDByParam(c)
+
+	testCases, err := h.testCaseService.FindByProjectID(projectID)
+	if err != nil {
+		response.RespondError(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	response.RespondOK(c, ToModelTestCaseResponseList(testCases))
 }

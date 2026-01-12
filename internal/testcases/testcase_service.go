@@ -1,6 +1,7 @@
 package testcases
 
 import (
+	"github.com/jhphon0730/action_manager/internal/model"
 	"github.com/jhphon0730/action_manager/internal/projects"
 	"github.com/jhphon0730/action_manager/internal/teststatus"
 	"gorm.io/gorm"
@@ -9,6 +10,7 @@ import (
 // TestCaseService 는 테스트 케이스 관련 서비스 인터페이스
 type TestCaseService interface {
 	Create(req *CreateTestCaseRequest) error
+	FindByProjectID(projectID uint) ([]*model.TestCase, error)
 }
 
 // testCaseService는 테스트 케이스 관련 서비스 구현체입니다.
@@ -48,4 +50,9 @@ func (s *testCaseService) Create(req *CreateTestCaseRequest) error {
 		return tx.Create(testCase).Error
 
 	})
+}
+
+// FindByProjectID 함수는 프로젝트 ID에 해당하는 테스트 케이스를 찾습니다.
+func (s *testCaseService) FindByProjectID(projectID uint) ([]*model.TestCase, error) {
+	return s.testCaseRepo.FindByProjectID(projectID)
 }
