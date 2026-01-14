@@ -30,6 +30,11 @@ func (d *CreateTestCaseRequest) ToModel() *model.TestCase {
 	}
 }
 
+// UpdateTestCaseStatusRequest 구조체는 테스트케이스의 상태를 업데이트하는 요청 정보를 담는 DTO입니다.
+type UpdateTestCaseStatusRequest struct {
+	CurrentStatusID uint `json:"current_status_id"`
+}
+
 // TestCaseResponse 구조체는 테스트케이스의 응답 정보를 담는 DTO입니다.
 type TestCaseResponse struct {
 	ID                uint       `json:"id"`

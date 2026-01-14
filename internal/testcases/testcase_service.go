@@ -11,6 +11,7 @@ import (
 type TestCaseService interface {
 	Create(req *CreateTestCaseRequest) error
 	FindByProjectID(projectID uint) ([]*model.TestCase, error)
+	UpdateStatus(testCaseID, projectID, userID, currentStatusID uint) error
 }
 
 // testCaseService는 테스트 케이스 관련 서비스 구현체입니다.
@@ -55,4 +56,48 @@ func (s *testCaseService) Create(req *CreateTestCaseRequest) error {
 // FindByProjectID 함수는 프로젝트 ID에 해당하는 테스트 케이스를 찾습니다.
 func (s *testCaseService) FindByProjectID(projectID uint) ([]*model.TestCase, error) {
 	return s.testCaseRepo.FindByProjectID(projectID)
+}
+
+// UpdateStatus 함수는 테스트 케이스의 상태를 업데이트합니다.
+func (s *testCaseService) UpdateStatus(testCaseID, projectID, userID, currentStatusID uint) error {
+	return s.testCaseRepo.WithTx(func(tx *gorm.DB) error {
+		var testCase *model.TestCase
+
+		// 테스트케이스가 존재하는지 확인
+		if err := tx.Where("project_id = ? AND id = ?", projectID, testCaseID).First(&testCase).Error; err != nil || testCase == nil {
+			if err == nil {
+				return ErrNotFound
+			}
+			return err
+		}
+
+		// 프로젝트에 해당하는 status 인지 확인
+		exists := s.testStatusService.IsProjectStatusTx(tx, projectID, currentStatusID)
+		if !exists {
+			return ErrNotInProjectTestStatus
+		}
+
+		// 현재 status랑 동일한 status로 변경하려고 하면 에러 반환
+		if testCase.CurrentStatusID == currentStatusID {
+			return ErrSameStatus
+		}
+
+		// status 업데이트
+		if err := tx.Model(&model.TestCase{}).Where("project_id = ? AND id = ?", projectID, testCaseID).Update("current_status_id", currentStatusID).Error; err != nil {
+			return err
+		}
+
+		// 업데이트 내역 추가
+		log := model.TestStatusHistory{
+			TestCaseID:   testCaseID,
+			FromStatusID: testCase.CurrentStatusID,
+			ToStatusID:   currentStatusID,
+			ChangedByID:  userID,
+		}
+		if err := tx.Create(&log).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
 }

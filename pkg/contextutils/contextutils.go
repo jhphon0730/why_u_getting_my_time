@@ -49,3 +49,14 @@ func GetStatusIDByParam(c *gin.Context) (uint, error) {
 
 	return uint(statusID), nil
 }
+
+// GetTestCaseIDByParam 함수는 테스트케이스 ID를 가져옵니다.
+func GetTestCaseIDByParam(c *gin.Context) (uint, error) {
+	testCaseIDParam := c.Param("testCaseID")
+	testCaseID, err := strconv.ParseUint(testCaseIDParam, 10, 64)
+	if err != nil {
+		return 0, err
+	}
+
+	return uint(testCaseID), nil
+}

@@ -79,6 +79,7 @@ func (s *server) RegisterRoutes() {
 		{
 			testCaseGroup.POST("", projectmw.RequireProjectMember(projectMemberSer), testCaseHan.Create)
 			testCaseGroup.GET("", projectmw.RequireProjectMember(projectMemberSer), testCaseHan.FindByProjectID)
+			testCaseGroup.PATCH("/:testCaseID/status", projectmw.RequireProjectMember(projectMemberSer), testCaseHan.UpdateStatus)
 		}
 	}
 
