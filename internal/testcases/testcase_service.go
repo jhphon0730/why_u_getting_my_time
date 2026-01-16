@@ -10,6 +10,7 @@ import (
 // TestCaseService 는 테스트 케이스 관련 서비스 인터페이스
 type TestCaseService interface {
 	Create(req *CreateTestCaseRequest) error
+	Find(projectID, testCaseID uint) (*model.TestCase, error)
 	FindByProjectID(projectID uint) ([]*model.TestCase, error)
 	UpdateStatus(testCaseID, projectID, userID, currentStatusID uint) error
 	UpdateAssignee(testCaseID, projectID, userID, currentAssigneeID uint) error
@@ -52,6 +53,11 @@ func (s *testCaseService) Create(req *CreateTestCaseRequest) error {
 		return tx.Create(testCase).Error
 
 	})
+}
+
+// Find 함수는 프로젝트 ID와 테스트 케이스 ID에 해당하는 테스트 케이스를 찾습니다.
+func (s *testCaseService) Find(projectID, testCaseID uint) (*model.TestCase, error) {
+	return s.testCaseRepo.Find(projectID, testCaseID)
 }
 
 // FindByProjectID 함수는 프로젝트 ID에 해당하는 테스트 케이스를 찾습니다.

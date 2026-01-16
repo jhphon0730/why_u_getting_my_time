@@ -35,6 +35,11 @@
 ## Test Case
 
 - Create ( Check Status ID: O / Check Assigned User ID : O )
+- Find (projectID, testCaseID)
 - FindByProjectID
 - Update CurrentStatusID ( with log )
 - Update CurrentAssigneeID ( with log )
+
+## Test Result
+
+- Create

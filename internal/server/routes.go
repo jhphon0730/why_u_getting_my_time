@@ -9,6 +9,7 @@ import (
 	projectmw "github.com/jhphon0730/action_manager/internal/projects/middleware"
 	"github.com/jhphon0730/action_manager/internal/response"
 	"github.com/jhphon0730/action_manager/internal/testcases"
+	testresults "github.com/jhphon0730/action_manager/internal/testresult"
 	"github.com/jhphon0730/action_manager/internal/teststatus"
 	"github.com/jhphon0730/action_manager/internal/users"
 )
@@ -38,6 +39,10 @@ func (s *server) RegisterRoutes() {
 	testCaseRepo := testcases.NewTestCaseRepository(db)
 	testCaseSer := testcases.NewTestCaseService(testCaseRepo, testStatusSer, projectMemberSer)
 	testCaseHan := testcases.NewTestCaseHandler(testCaseSer)
+
+	testResultRepo := testresults.NewTestResultRepository(db)
+	testResultSer := testresults.NewTestResultService(testResultRepo, testCaseSer)
+	testResultHan := testresults.NewTestResultHandler(testResultSer)
 
 	v1 := s.engine.Group("/api/v1")
 
@@ -81,6 +86,13 @@ func (s *server) RegisterRoutes() {
 			testCaseGroup.GET("", projectmw.RequireProjectMember(projectMemberSer), testCaseHan.FindByProjectID)
 			testCaseGroup.PATCH("/:testCaseID/status", projectmw.RequireProjectMember(projectMemberSer), testCaseHan.UpdateStatus)
 		}
+
+		/* TEST RESULT */
+		testResultGroup := projectGroup.Group("/test-results/:projectID")
+		{
+			testResultGroup.POST("", projectmw.RequireProjectMember(projectMemberSer), testResultHan.Create)
+		}
+
 	}
 
 	/* PING TEST */
