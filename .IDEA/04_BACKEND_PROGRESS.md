@@ -37,3 +37,4 @@
 - Create ( Check Status ID: O / Check Assigned User ID : O )
 - FindByProjectID
 - Update CurrentStatusID ( with log )
+- Update CurrentAssigneeID ( with log )

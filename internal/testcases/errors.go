@@ -5,6 +5,7 @@ import "errors"
 var (
 	ErrNotFound     = errors.New("테스트케이스를 찾을 수 없습니다.")
 	ErrSameStatus   = errors.New("현재 상태와 동일한 상태로 변경하려고 합니다.")
+	ErrSameAssignee = errors.New("현재 할당자와 동일한 할당자로 변경하려고 합니다.")
 	ErrUnauthorized = errors.New("권한이 없습니다.")
 
 	ErrInvalidRequest         = errors.New("잘못된 요청입니다.")

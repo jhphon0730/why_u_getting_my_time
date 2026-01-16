@@ -12,6 +12,7 @@ type TestCaseService interface {
 	Create(req *CreateTestCaseRequest) error
 	FindByProjectID(projectID uint) ([]*model.TestCase, error)
 	UpdateStatus(testCaseID, projectID, userID, currentStatusID uint) error
+	UpdateAssignee(testCaseID, projectID, userID, currentAssigneeID uint) error
 }
 
 // testCaseService는 테스트 케이스 관련 서비스 구현체입니다.
@@ -94,6 +95,48 @@ func (s *testCaseService) UpdateStatus(testCaseID, projectID, userID, currentSta
 			ToStatusID:   currentStatusID,
 			ChangedByID:  userID,
 		}
+		if err := tx.Create(&log).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
+}
+
+// UpdateAssignee 함수는 현재 테스트케이스에 할당된 사용자를 다른 사용자로 변경해주는 함수
+func (s *testCaseService) UpdateAssignee(testCaseID, projectID, userID, currentAssigneeID uint) error {
+	return s.testCaseRepo.WithTx(func(tx *gorm.DB) error {
+		var testCase *model.TestCase
+		if err := tx.Where("project_id = ? AND id = ?", projectID, testCaseID).First(&testCase).Error; err != nil || testCase == nil {
+			if err == nil {
+				return ErrNotFound
+			}
+			return err
+		}
+
+		// 프로젝트에 해당하는 사용자인지 여부 확인
+		exists, err := s.projectMemberService.IsMemberTx(tx, projectID, currentAssigneeID)
+		if err != nil || !exists {
+			return ErrNotInProjectMember
+		}
+
+		// 기존이랑 동일하다면 ...
+		if testCase.CurrentAssigneeID != nil && *testCase.CurrentAssigneeID == currentAssigneeID {
+			return ErrSameAssignee
+		}
+
+		// assignee 업데이트
+		if err := tx.Model(&model.TestCase{}).Where("project_id = ? AND id = ?", projectID, testCaseID).Update("assignee_id", currentAssigneeID).Error; err != nil {
+			return err
+		}
+
+		log := model.TestAssigneeHistory{
+			TestCaseID:     testCaseID,
+			FromAssigneeID: testCase.CurrentAssigneeID,
+			ToAssigneeID:   &currentAssigneeID,
+			ChangedByID:    userID,
+		}
+
 		if err := tx.Create(&log).Error; err != nil {
 			return err
 		}
