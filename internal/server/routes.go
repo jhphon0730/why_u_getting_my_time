@@ -74,7 +74,7 @@ func (s *server) RegisterRoutes() {
 		/* TEST STATUS */
 		testStatusGroup := projectGroup.Group("/test-status/:projectID")
 		{
-			testStatusGroup.GET("", projectmw.RequireProjectMember(projectMemberSer), testStatusHan.FindByProjectID)
+			testStatusGroup.GET("", projectmw.RequireProjectMember(projectMemberSer), testStatusHan.Find)
 			testStatusGroup.POST("", projectmw.RequireProjectManager(projectMemberSer), testStatusHan.Create)
 			testStatusGroup.DELETE("/:statusID", projectmw.RequireProjectManager(projectMemberSer), testStatusHan.Delete)
 		}
@@ -83,7 +83,7 @@ func (s *server) RegisterRoutes() {
 		testCaseGroup := projectGroup.Group("/test-cases/:projectID")
 		{
 			testCaseGroup.POST("", projectmw.RequireProjectMember(projectMemberSer), testCaseHan.Create)
-			testCaseGroup.GET("", projectmw.RequireProjectMember(projectMemberSer), testCaseHan.FindByProjectID)
+			testCaseGroup.GET("", projectmw.RequireProjectMember(projectMemberSer), testCaseHan.Find)
 			testCaseGroup.PATCH("/:testCaseID/status", projectmw.RequireProjectMember(projectMemberSer), testCaseHan.UpdateStatus)
 		}
 
@@ -91,6 +91,7 @@ func (s *server) RegisterRoutes() {
 		testResultGroup := projectGroup.Group("/test-results/:projectID")
 		{
 			testResultGroup.POST("", projectmw.RequireProjectMember(projectMemberSer), testResultHan.Create)
+			testResultGroup.GET("/:testResultID", projectmw.RequireProjectMember(projectMemberSer), testResultHan.Find)
 		}
 
 	}

@@ -11,7 +11,7 @@ import (
 // TestCaseHandler 는 테스트 케이스를 관리하는 인터페이스입니다.
 type TestCaseHandler interface {
 	Create(c *gin.Context)
-	FindByProjectID(c *gin.Context)
+	Find(c *gin.Context)
 	UpdateStatus(c *gin.Context)
 }
 
@@ -44,11 +44,13 @@ func (h *testCaseHandler) Create(c *gin.Context) {
 		return
 	}
 
-	response.RespondCreated(c, nil)
+	response.RespondCreated(c, gin.H{
+		"message": "Create Success.",
+	})
 }
 
-// FindByProjectID 함수는 특정 프로젝트의 테스트 케이스를 조회합니다.
-func (h *testCaseHandler) FindByProjectID(c *gin.Context) {
+// Find 함수는 특정 프로젝트의 테스트 케이스를 조회합니다.
+func (h *testCaseHandler) Find(c *gin.Context) {
 	projectID, _ := contextutils.GetProjectIDByParam(c)
 
 	testCases, err := h.testCaseService.FindByProjectID(projectID)
@@ -57,7 +59,10 @@ func (h *testCaseHandler) FindByProjectID(c *gin.Context) {
 		return
 	}
 
-	response.RespondOK(c, ToModelTestCaseResponseList(testCases))
+	response.RespondOK(c, gin.H{
+		"test_cases": ToModelTestCaseResponseList(testCases),
+		"message":    "Find Success.",
+	})
 }
 
 // UpdateStatus 함수는 특정 테스트 케이스의 상태를 업데이트합니다.
@@ -72,6 +77,7 @@ func (h *testCaseHandler) UpdateStatus(c *gin.Context) {
 
 	testCaseID, err := contextutils.GetTestCaseIDByParam(c)
 	if err != nil {
+		response.RespondError(c, http.StatusUnauthorized, err.Error())
 		return
 	}
 
@@ -86,5 +92,7 @@ func (h *testCaseHandler) UpdateStatus(c *gin.Context) {
 		return
 	}
 
-	response.RespondOK(c, nil)
+	response.RespondOK(c, gin.H{
+		"message": "Update Success.",
+	})
 }

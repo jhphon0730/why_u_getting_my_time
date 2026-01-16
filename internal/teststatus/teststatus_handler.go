@@ -11,7 +11,7 @@ import (
 // TestStatusHandler는 테스트 상태를 관리하는 기능을 제공
 type TestStatusHandler interface {
 	Create(c *gin.Context)
-	FindByProjectID(c *gin.Context)
+	Find(c *gin.Context)
 	Delete(c *gin.Context)
 }
 
@@ -45,11 +45,13 @@ func (h *testStatusHandler) Create(c *gin.Context) {
 		return
 	}
 
-	response.RespondCreated(c, nil)
+	response.RespondCreated(c, gin.H{
+		"message": "Create Success.",
+	})
 }
 
 // FindByProjectID 함수는 특정 프로젝트의 테스트 상태를 조회합니다.
-func (h *testStatusHandler) FindByProjectID(c *gin.Context) {
+func (h *testStatusHandler) Find(c *gin.Context) {
 	projectID, _ := contextutils.GetProjectIDByParam(c)
 
 	status, err := h.testStatusService.FindByProjectID(projectID)
@@ -59,6 +61,7 @@ func (h *testStatusHandler) FindByProjectID(c *gin.Context) {
 
 	response.RespondOK(c, gin.H{
 		"test_status": ToModelTestStatusResponseList(status),
+		"message":     "Find Success.",
 	})
 }
 

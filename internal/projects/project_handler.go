@@ -47,7 +47,9 @@ func (h *projectHandler) CreateProject(c *gin.Context) {
 		return
 	}
 
-	response.RespondSuccess(c, http.StatusCreated, nil)
+	response.RespondSuccess(c, http.StatusCreated, gin.H{
+		"message": "Create Success.",
+	})
 }
 
 // GetProjects는 사용자의 모든 프로젝트를 가져옵니다.

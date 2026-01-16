@@ -11,6 +11,7 @@ import (
 // TestResultHandler 인터페이스는 테스트 결과를 처리 관련 요청을 처리하는 인터페이스입니다.
 type TestResultHandler interface {
 	Create(c *gin.Context)
+	Find(c *gin.Context)
 }
 
 // testResultHandler 구조체는 테스트 결과를 처리하는 구조체입니다.
@@ -40,5 +41,30 @@ func (h *testResultHandler) Create(c *gin.Context) {
 		return
 	}
 
-	response.RespondCreated(c, nil)
+	response.RespondCreated(c, gin.H{
+		"message": "Create Success.",
+	})
+}
+
+// Find 함수는 프로젝트 아이디와 테스트케이스 아이디로 테스트케이스 결과를 모두 조회
+func (h *testResultHandler) Find(c *gin.Context) {
+	projectID, _ := contextutils.GetProjectIDByParam(c)
+
+	// GetTestResultIDByParam
+	testResultID, err := contextutils.GetTestResultIDByParam(c)
+	if err != nil {
+		response.RespondError(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	testResults, err := h.testResultService.Find(projectID, testResultID)
+	if err != nil {
+		response.RespondError(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	response.RespondOK(c, gin.H{
+		"test_results": ToModelTestResultResponseList(testResults),
+		"message":      "Find Success.",
+	})
 }

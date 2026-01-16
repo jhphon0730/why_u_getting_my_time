@@ -44,7 +44,9 @@ func (h *userHandler) SignUp(c *gin.Context) {
 		return
 	}
 
-	response.RespondCreated(c, nil)
+	response.RespondCreated(c, gin.H{
+		"message": "Sign Up Success.",
+	})
 }
 
 // SignIn 함수는 사용자를 찾아 로그인합니다.
@@ -79,8 +81,9 @@ func (h *userHandler) SignIn(c *gin.Context) {
 	c.SetCookie("token", token, 43200, "/", "", false, true)
 
 	response.RespondOK(c, gin.H{
-		"token": token,
-		"user":  ToModelResponse(user),
+		"token":   token,
+		"user":    ToModelResponse(user),
+		"message": "Sign In Success.",
 	})
 }
 

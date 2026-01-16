@@ -53,7 +53,9 @@ func (h *projectMemberHandler) AddMember(c *gin.Context) {
 		return
 	}
 
-	response.RespondCreated(c, nil)
+	response.RespondCreated(c, gin.H{
+		"message": "Create Success.",
+	})
 }
 
 // UpdateRoleToManager는 프로젝트 멤버의 역할을 관리자로 업데이트합니다.
@@ -73,7 +75,7 @@ func (h *projectMemberHandler) UpdateRoleToManager(c *gin.Context) {
 		response.RespondError(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-	response.RespondCreated(c, nil)
+	response.RespondNoContent(c)
 }
 
 // UpdateRoleToMember는 프로젝트 멤버의 역할을 멤버로 업데이트합니다.
@@ -93,7 +95,7 @@ func (h *projectMemberHandler) UpdateRoleToMember(c *gin.Context) {
 		response.RespondError(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-	response.RespondCreated(c, nil)
+	response.RespondNoContent(c)
 }
 
 // DeleteMember는 프로젝트 멤버를 삭제합니다.
@@ -128,6 +130,7 @@ func (h *projectMemberHandler) FindByProjectID(c *gin.Context) {
 	}
 
 	response.RespondOK(c, gin.H{
-		"members": ToModelMemberResponseList(members),
+		"project_members": ToModelMemberResponseList(members),
+		"message":         "Find Success.",
 	})
 }
