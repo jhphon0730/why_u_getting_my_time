@@ -7,6 +7,7 @@ import (
 
 // TestResultService 인터페이스는 테스트 결과를 관리하는 서비스를 정의합니다.
 type TestResultService interface {
+	IsValidResult(result string) bool
 	Create(req *CreateTestResultRequest, projectID uint) error
 	Find(projectID, testCaseID uint) ([]*model.TestResult, error)
 }
@@ -25,10 +26,20 @@ func NewTestResultService(testResultRepo TestResultRepository, testCaseService t
 	}
 }
 
+// IsValidResult 함수는 result 값이 올바른지 확인합니다.
+func (r *testResultService) IsValidResult(result string) bool {
+	return result == "PASS" || result == "FAIL" || result == "ABORT"
+}
+
 // Create 함수는 새로운 테스트 결과를 생성합니다.
 func (s *testResultService) Create(req *CreateTestResultRequest, projectID uint) error {
 	if testCase, err := s.testCaseService.Find(projectID, req.TestCaseID); err != nil || testCase == nil {
 		return ErrNotFoundTestCase
+	}
+
+	// 입력 된 Result가 검증 된 값중 맞는 값인지 검사
+	if !s.IsValidResult(req.Result) {
+		return ErrInvalidResult
 	}
 
 	testResult := req.ToModel()
