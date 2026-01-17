@@ -9,7 +9,7 @@ import (
 	projectmw "github.com/jhphon0730/action_manager/internal/projects/middleware"
 	"github.com/jhphon0730/action_manager/internal/response"
 	"github.com/jhphon0730/action_manager/internal/testcases"
-	testresults "github.com/jhphon0730/action_manager/internal/testresult"
+	testresults "github.com/jhphon0730/action_manager/internal/testresults"
 	"github.com/jhphon0730/action_manager/internal/teststatus"
 	"github.com/jhphon0730/action_manager/internal/users"
 )
