@@ -53,7 +53,7 @@ func (h *testCaseHandler) Create(c *gin.Context) {
 func (h *testCaseHandler) Find(c *gin.Context) {
 	projectID, _ := contextutils.GetProjectIDByParam(c)
 
-	testCases, err := h.testCaseService.FindByProjectID(projectID)
+	testCases, err := h.testCaseService.Find(projectID)
 	if err != nil {
 		response.RespondError(c, http.StatusInternalServerError, err.Error())
 		return

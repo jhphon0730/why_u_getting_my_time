@@ -8,6 +8,8 @@ import (
 // TestResultRepository 인터페이스는 TestResultRepository의 메서드를 정의합니다.
 type TestResultRepository interface {
 	Create(testResult *model.TestResult) error
+	FindOne(testCaseID, testResultID uint) (*model.TestResult, error)
+	FindOneByID(testResultID uint) (*model.TestResult, error)
 	Find(testCaseID uint) ([]*model.TestResult, error)
 }
 
@@ -24,6 +26,22 @@ func NewTestResultRepository(db *gorm.DB) TestResultRepository {
 // Create 함수는 새로운 테스트 결과를 생성합니다
 func (r *testResultRepository) Create(testResult *model.TestResult) error {
 	return r.db.Create(testResult).Error
+}
+
+func (r *testResultRepository) FindOne(testCaseID, testResultID uint) (*model.TestResult, error) {
+	var testResult model.TestResult
+	if err := r.db.Where("test_case_id = ? AND id = ?", testCaseID, testResultID).First(&testResult).Error; err != nil {
+		return nil, err
+	}
+	return &testResult, nil
+}
+
+func (r *testResultRepository) FindOneByID(testResultID uint) (*model.TestResult, error) {
+	var testResult model.TestResult
+	if err := r.db.Where("id = ?", testResultID).First(&testResult).Error; err != nil {
+		return nil, err
+	}
+	return &testResult, nil
 }
 
 // Find 함수는 프로젝트 아이디와 테스트케이스 아이디로 테스트케이스 결과를 모두 조회

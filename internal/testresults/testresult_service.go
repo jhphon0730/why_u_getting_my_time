@@ -9,6 +9,8 @@ import (
 type TestResultService interface {
 	IsValidResult(result string) bool
 	Create(req *CreateTestResultRequest, projectID uint) error
+	FindOne(projectID, testCaseID, testResultID uint) (*model.TestResult, error)
+	FindOneByID(testResultID uint) (*model.TestResult, error)
 	Find(projectID, testCaseID uint) ([]*model.TestResult, error)
 }
 
@@ -33,7 +35,7 @@ func (r *testResultService) IsValidResult(result string) bool {
 
 // Create 함수는 새로운 테스트 결과를 생성합니다.
 func (s *testResultService) Create(req *CreateTestResultRequest, projectID uint) error {
-	if testCase, err := s.testCaseService.Find(projectID, req.TestCaseID); err != nil || testCase == nil {
+	if testCase, err := s.testCaseService.FindOne(projectID, req.TestCaseID); err != nil || testCase == nil {
 		return ErrNotFoundTestCase
 	}
 
@@ -46,9 +48,21 @@ func (s *testResultService) Create(req *CreateTestResultRequest, projectID uint)
 	return s.testResultRepo.Create(testResult)
 }
 
+func (s *testResultService) FindOne(projectID, testCaseID, testResultID uint) (*model.TestResult, error) {
+	if testCase, err := s.testCaseService.FindOne(projectID, testCaseID); err != nil || testCase == nil {
+		return nil, ErrNotFoundTestCase
+	}
+
+	return s.testResultRepo.FindOne(testCaseID, testResultID)
+}
+
+func (s *testResultService) FindOneByID(testResultID uint) (*model.TestResult, error) {
+	return s.testResultRepo.FindOneByID(testResultID)
+}
+
 // Find 함수는 프로젝트 아이디와 테스트케이스 아이디로 테스트케이스 결과를 모두 조회
 func (s *testResultService) Find(projectID, testCaseID uint) ([]*model.TestResult, error) {
-	if testCase, err := s.testCaseService.Find(projectID, testCaseID); err != nil || testCase == nil {
+	if testCase, err := s.testCaseService.FindOne(projectID, testCaseID); err != nil || testCase == nil {
 		return nil, ErrNotFoundTestCase
 	}
 
