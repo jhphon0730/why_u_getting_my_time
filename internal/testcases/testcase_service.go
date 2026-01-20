@@ -57,12 +57,12 @@ func (s *testCaseService) Create(req *CreateTestCaseRequest) error {
 
 // Find 함수는 프로젝트 ID와 테스트 케이스 ID에 해당하는 테스트 케이스를 찾습니다.
 func (s *testCaseService) FindOne(projectID, testCaseID uint) (*model.TestCase, error) {
-	return s.testCaseRepo.Find(projectID, testCaseID)
+	return s.testCaseRepo.FindOne(projectID, testCaseID)
 }
 
-// FindByProjectID 함수는 프로젝트 ID에 해당하는 테스트 케이스를 찾습니다.
+// Find 함수는 프로젝트 ID에 해당하는 테스트 케이스를 찾습니다.
 func (s *testCaseService) Find(projectID uint) ([]*model.TestCase, error) {
-	return s.testCaseRepo.FindByProjectID(projectID)
+	return s.testCaseRepo.Find(projectID)
 }
 
 // UpdateStatus 함수는 테스트 케이스의 상태를 업데이트합니다.

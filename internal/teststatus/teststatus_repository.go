@@ -12,7 +12,7 @@ type TestStatusRepository interface {
 	CreateDefault(projectID uint) error
 	Create(status *model.TestStatus) error
 	Delete(projectID, statusID uint) error
-	FindByProjectID(projectID uint) ([]*model.TestStatus, error)
+	Find(projectID uint) ([]*model.TestStatus, error)
 	IsProjectStatus(projectID, statusID uint) bool
 }
 
@@ -57,8 +57,8 @@ func (r *testStatusRepository) Create(status *model.TestStatus) error {
 	return r.db.Create(status).Error
 }
 
-// FindByProjectID 함수는 프로젝트 ID를 기반으로 테스트 상태를 조회합니다.
-func (r *testStatusRepository) FindByProjectID(projectID uint) ([]*model.TestStatus, error) {
+// Find 함수는 프로젝트 ID를 기반으로 테스트 상태를 조회합니다.
+func (r *testStatusRepository) Find(projectID uint) ([]*model.TestStatus, error) {
 	var testCases []*model.TestStatus
 	if err := r.db.Where("project_id = ?", projectID).Find(&testCases).Error; err != nil {
 		return nil, err

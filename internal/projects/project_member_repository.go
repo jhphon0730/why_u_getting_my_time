@@ -10,7 +10,7 @@ type ProjectMemberRepository interface {
 	NewWithTx(tx *gorm.DB) ProjectMemberRepository
 
 	Create(projectMember *model.ProjectMember) error
-	FindByProjectID(projectID uint) ([]*model.ProjectMember, error)
+	Find(projectID uint) ([]*model.ProjectMember, error)
 	FindByProjectIDAndUserID(projectID, userID uint) (*model.ProjectMember, error)
 	UpdateRoleToManager(projectID, userID uint) error
 	UpdateRoleToMember(projectID, userID uint) error
@@ -40,8 +40,8 @@ func (r *projectMemberRepository) Create(projectMember *model.ProjectMember) err
 	return r.db.Create(projectMember).Error
 }
 
-// FindByProjectID는 프로젝트 ID를 기반으로 프로젝트 멤버 목록을 찾습니다.
-func (r *projectMemberRepository) FindByProjectID(projectID uint) ([]*model.ProjectMember, error) {
+// Find는 프로젝트 ID를 기반으로 프로젝트 멤버 목록을 찾습니다.
+func (r *projectMemberRepository) Find(projectID uint) ([]*model.ProjectMember, error) {
 	var projectMembers []*model.ProjectMember
 	if err := r.db.Where("project_id = ?", projectID).Find(&projectMembers).Error; err != nil {
 		return nil, err

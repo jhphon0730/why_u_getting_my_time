@@ -14,7 +14,7 @@ type ProjectMemberHandler interface {
 	UpdateRoleToManager(c *gin.Context)
 	UpdateRoleToMember(c *gin.Context)
 	DeleteMember(c *gin.Context)
-	FindByProjectID(c *gin.Context)
+	Find(c *gin.Context)
 }
 
 // ProjectMemberHandler는 프로젝트 멤버를 관리하는 구현체입니다.
@@ -119,11 +119,11 @@ func (h *projectMemberHandler) DeleteMember(c *gin.Context) {
 	response.RespondNoContent(c)
 }
 
-// FindByProjectID는 프로젝트 멤버 목록을 조회합니다.
-func (h *projectMemberHandler) FindByProjectID(c *gin.Context) {
+// Find는 프로젝트 멤버 목록을 조회합니다.
+func (h *projectMemberHandler) Find(c *gin.Context) {
 	projectID, _ := contextutils.GetProjectIDByParam(c)
 
-	members, err := h.projectMemberSer.FindByProjectID(projectID)
+	members, err := h.projectMemberSer.Find(projectID)
 	if err != nil {
 		response.RespondError(c, http.StatusInternalServerError, err.Error())
 		return

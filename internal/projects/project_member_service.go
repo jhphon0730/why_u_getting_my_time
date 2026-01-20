@@ -8,7 +8,7 @@ import (
 // ProjectMemberService는 프로젝트 멤버 관리를 위한 인터페이스입니다.
 type ProjectMemberService interface {
 	Create(req *CreateProjectMemberRequest) error
-	FindByProjectID(projectID uint) ([]*model.ProjectMember, error)
+	Find(projectID uint) ([]*model.ProjectMember, error)
 	UpdateRoleToManager(projectID, userID uint) error
 	UpdateRoleToMember(projectID, userID uint) error
 	Delete(projectID, userID uint) error
@@ -40,9 +40,9 @@ func (s *projectMemberService) Create(req *CreateProjectMemberRequest) error {
 	return s.projectMemberRepo.Create(project)
 }
 
-// FindByProjectID 프로젝트에 속한 멤버 목록을 조회합니다.
-func (s *projectMemberService) FindByProjectID(projectID uint) ([]*model.ProjectMember, error) {
-	return s.projectMemberRepo.FindByProjectID(projectID)
+// Find 프로젝트에 속한 멤버 목록을 조회합니다.
+func (s *projectMemberService) Find(projectID uint) ([]*model.ProjectMember, error) {
+	return s.projectMemberRepo.Find(projectID)
 }
 
 // UpdateRoleToManager 함수는 프로젝트 멤버의 역할을 관리자로 업데이트합니다.

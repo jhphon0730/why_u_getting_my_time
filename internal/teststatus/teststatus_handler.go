@@ -50,11 +50,11 @@ func (h *testStatusHandler) Create(c *gin.Context) {
 	})
 }
 
-// FindByProjectID 함수는 특정 프로젝트의 테스트 상태를 조회합니다.
+// Find 함수는 특정 프로젝트의 테스트 상태를 조회합니다.
 func (h *testStatusHandler) Find(c *gin.Context) {
 	projectID, _ := contextutils.GetProjectIDByParam(c)
 
-	status, err := h.testStatusService.FindByProjectID(projectID)
+	status, err := h.testStatusService.Find(projectID)
 	if err != nil {
 		response.RespondError(c, http.StatusInternalServerError, err.Error())
 	}
