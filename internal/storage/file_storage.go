@@ -15,6 +15,7 @@ const (
 type FileStorage interface {
 	// 파일 스트림, 메타데이터
 	Save(file []byte, metadata map[string]string) (string, error)
+	Delete(path string) error
 }
 
 type fileStorage struct {
@@ -42,4 +43,14 @@ func (s *fileStorage) Save(file []byte, metadata map[string]string) (string, err
 	}
 
 	return fullPath, nil
+}
+
+func (s *fileStorage) Delete(path string) error {
+	if path == "" {
+		return nil
+	}
+	if err := os.Remove(path); err != nil && !os.IsNotExist(err) {
+		return err
+	}
+	return nil
 }

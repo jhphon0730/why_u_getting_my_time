@@ -6,6 +6,8 @@ import (
 )
 
 type AttachmentRepository interface {
+	WithTx(fn func(tx *gorm.DB) error) error
+
 	Create(attachment *model.Attachment) error
 }
 
@@ -17,6 +19,10 @@ func NewAttachmentRepository(db *gorm.DB) AttachmentRepository {
 	return &attachmentRepository{
 		db: db,
 	}
+}
+
+func (r *attachmentRepository) WithTx(fn func(tx *gorm.DB) error) error {
+	return r.db.Transaction(fn)
 }
 
 func (r *attachmentRepository) Create(attachment *model.Attachment) error {
