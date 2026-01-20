@@ -1,0 +1,88 @@
+package attachments
+
+import (
+	"io"
+	"net/http"
+	"strconv"
+
+	"github.com/gin-gonic/gin"
+	"github.com/jhphon0730/action_manager/internal/response"
+	"github.com/jhphon0730/action_manager/pkg/contextutils"
+)
+
+type AttachmentHandler interface {
+	Create(c *gin.Context)
+}
+
+type attachmentHandler struct {
+	attachmentService AttachmentService
+}
+
+func NewAttachmentHandler(attachmentService AttachmentService) AttachmentHandler {
+	return &attachmentHandler{
+		attachmentService: attachmentService,
+	}
+}
+
+func (h *attachmentHandler) Create(c *gin.Context) {
+	projectID, _ := contextutils.GetProjectIDByParam(c)
+	uploadedBy, _ := contextutils.GetUserID(c)
+
+	// form 값
+	targetType := c.PostForm("target_type")
+	targetIDStr := c.PostForm("target_id")
+
+	targetID, err := strconv.ParseUint(targetIDStr, 10, 64)
+	if err != nil {
+		response.RespondError(c, http.StatusBadRequest, ErrInvalidRequest.Error())
+		return
+	}
+
+	req := CreateAttachmentRequest{
+		TargetType: targetType,
+		TargetID:   uint(targetID),
+	}
+
+	// files
+	form, err := c.MultipartForm()
+	if err != nil {
+		response.RespondError(c, http.StatusBadRequest, ErrInvalidRequest.Error())
+		return
+	}
+
+	fileHeaders := form.File["files"]
+	if len(fileHeaders) == 0 {
+		response.RespondError(c, http.StatusBadRequest, ErrNoFilesProvided.Error())
+		return
+	}
+
+	var files []UploadedFile
+	for _, fh := range fileHeaders {
+		f, err := fh.Open()
+		if err != nil {
+			response.RespondError(c, http.StatusBadRequest, err.Error())
+			return
+		}
+		defer f.Close()
+
+		bytes, err := io.ReadAll(f)
+		if err != nil {
+			response.RespondError(c, http.StatusBadRequest, err.Error())
+			return
+		}
+
+		files = append(files, UploadedFile{
+			Bytes:       bytes,
+			Filename:    fh.Filename,
+			ContentType: fh.Header.Get("Content-Type"),
+			Size:        fh.Size,
+		})
+	}
+
+	if err := h.attachmentService.Create(req, projectID, uploadedBy, files); err != nil {
+		response.RespondError(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	response.RespondSuccess(c, http.StatusCreated, nil)
+}

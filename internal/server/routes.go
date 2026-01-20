@@ -2,12 +2,14 @@ package server
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/jhphon0730/action_manager/internal/attachments"
 	"github.com/jhphon0730/action_manager/internal/database"
 	"github.com/jhphon0730/action_manager/internal/middleware"
 	authmw "github.com/jhphon0730/action_manager/internal/middleware"
 	"github.com/jhphon0730/action_manager/internal/projects"
 	projectmw "github.com/jhphon0730/action_manager/internal/projects/middleware"
 	"github.com/jhphon0730/action_manager/internal/response"
+	"github.com/jhphon0730/action_manager/internal/storage"
 	"github.com/jhphon0730/action_manager/internal/testcases"
 	testresults "github.com/jhphon0730/action_manager/internal/testresults"
 	"github.com/jhphon0730/action_manager/internal/teststatus"
@@ -43,6 +45,12 @@ func (s *server) RegisterRoutes() {
 	testResultRepo := testresults.NewTestResultRepository(db)
 	testResultSer := testresults.NewTestResultService(testResultRepo, testCaseSer)
 	testResultHan := testresults.NewTestResultHandler(testResultSer)
+
+	fileStorage := storage.NewFileStorage()
+
+	attachmentRepo := attachments.NewAttachmentRepository(db)
+	attachmentSer := attachments.NewAttachmentService(attachmentRepo, testCaseSer, testResultSer, fileStorage)
+	attachmentHan := attachments.NewAttachmentHandler(attachmentSer)
 
 	v1 := s.engine.Group("/api/v1")
 
@@ -92,6 +100,12 @@ func (s *server) RegisterRoutes() {
 		{
 			testResultGroup.POST("", projectmw.RequireProjectMember(projectMemberSer), testResultHan.Create)
 			testResultGroup.GET("/:testResultID", projectmw.RequireProjectMember(projectMemberSer), testResultHan.Find)
+		}
+
+		/* ATTACHMENT */
+		attachmentGroup := projectGroup.Group("/attachments/:projectID")
+		{
+			attachmentGroup.POST("", projectmw.RequireProjectMember(projectMemberSer), attachmentHan.Create)
 		}
 
 	}
