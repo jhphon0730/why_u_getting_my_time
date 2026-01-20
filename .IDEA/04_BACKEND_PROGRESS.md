@@ -28,22 +28,27 @@
 ## Test Status
 
 - Create Default (프로젝트 생성 시에 기본 Status 생성)
-- FindByProjectID
+- Find (projectID)
 - Create
 - Delete
 
 ## Test Case
 
 - Create ( Check Status ID: O / Check Assigned User ID : O )
-- Find (projectID, testCaseID)
+- FindOne(projectID, testCaseID)
+- Find (projectID)
 - Update CurrentStatusID ( with log )
 - Update CurrentAssigneeID ( with log )
 
 ## Test Result
 
 - Create
-- Find (projectID, testResultID)
+- FindOne(projectID, testCaseID, testResultID)
+- Find(projectID, testCaseID)
+- FindOneByID(testResultID)
 
 ## Attachment
 
-- Create (form-xxx)
+- Create (form-xxx) ( required files )
+- FindOne (target_type, target_id, projectID, attachmentID) # TODO
+- Find (target_type, target_id, projectID) # TODO

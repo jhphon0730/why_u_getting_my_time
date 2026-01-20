@@ -38,6 +38,10 @@ func (s *fileStorage) Save(file []byte, metadata map[string]string) (string, err
 	filename := uuid.New().String() + ext
 	fullPath := filepath.Join(dir, filename)
 
+	if err := os.MkdirAll(dir, 0755); err != nil {
+		return "", err
+	}
+
 	if err := os.WriteFile(fullPath, file, 0644); err != nil {
 		return "", err
 	}
