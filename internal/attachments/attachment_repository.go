@@ -10,6 +10,7 @@ type AttachmentRepository interface {
 
 	Create(attachment *model.Attachment) error
 	FindOne(targetType string, targetID, attachmentID uint) (*model.Attachment, error)
+	Find(targetType string, targetID uint) ([]*model.Attachment, error)
 }
 
 type attachmentRepository struct {
@@ -36,4 +37,12 @@ func (r *attachmentRepository) FindOne(targetType string, targetID, attachmentID
 		return nil, err
 	}
 	return &attachment, nil
+}
+
+func (r *attachmentRepository) Find(targetType string, targetID uint) ([]*model.Attachment, error) {
+	var attachments []*model.Attachment
+	if err := r.db.Where("target_type = ? AND target_id = ?", targetType, targetID).Find(&attachments).Error; err != nil {
+		return nil, err
+	}
+	return attachments, nil
 }

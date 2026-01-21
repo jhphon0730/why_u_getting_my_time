@@ -106,9 +106,9 @@ func (s *server) RegisterRoutes() {
 		attachmentGroup := projectGroup.Group("/attachments/:projectID")
 		{
 			attachmentGroup.POST("", projectmw.RequireProjectMember(projectMemberSer), attachmentHan.Create)
+			attachmentGroup.GET("", projectmw.RequireProjectMember(projectMemberSer), attachmentHan.Find)
 			attachmentGroup.GET("/:attachmentID", projectmw.RequireProjectMember(projectMemberSer), attachmentHan.FindOne)
 		}
-
 	}
 
 	/* PING TEST */

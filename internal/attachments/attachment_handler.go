@@ -13,6 +13,7 @@ import (
 type AttachmentHandler interface {
 	Create(c *gin.Context)
 	FindOne(c *gin.Context)
+	Find(c *gin.Context)
 }
 
 type attachmentHandler struct {
@@ -90,7 +91,6 @@ func (h *attachmentHandler) FindOne(c *gin.Context) {
 
 	targetType := contextutils.GetQueryValue(c, "target_type")
 	targetIDStr := contextutils.GetQueryValue(c, "target_id")
-
 	targetID := utils.InterfaceToUint(targetIDStr)
 
 	attachment, err := h.attachmentService.FindOne(targetType, projectID, targetID, attachmentID)
@@ -102,5 +102,24 @@ func (h *attachmentHandler) FindOne(c *gin.Context) {
 	response.RespondSuccess(c, http.StatusOK, gin.H{
 		"message":    "Attachment found successfully",
 		"attachment": ToModelAttachmentResponse(attachment),
+	})
+}
+
+func (h *attachmentHandler) Find(c *gin.Context) {
+	projectID, _ := contextutils.GetProjectIDByParam(c)
+
+	targetType := contextutils.GetQueryValue(c, "target_type")
+	targetIDStr := contextutils.GetQueryValue(c, "target_id")
+	targetID := utils.InterfaceToUint(targetIDStr)
+
+	attachments, err := h.attachmentService.Find(targetType, projectID, targetID)
+	if err != nil {
+		response.RespondError(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	response.RespondSuccess(c, http.StatusOK, gin.H{
+		"message":     "Attachments found successfully",
+		"attachments": ToModelAttachmentResponseList(attachments),
 	})
 }
