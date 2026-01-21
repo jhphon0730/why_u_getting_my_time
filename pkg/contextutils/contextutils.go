@@ -71,3 +71,18 @@ func GetTestResultIDByParam(c *gin.Context) (uint, error) {
 
 	return uint(testResultID), nil
 }
+
+func GetAttachmentIDByParam(c *gin.Context) (uint, error) {
+	attachmentIDParam := c.Param("attachmentID")
+	attachmentID, err := strconv.ParseUint(attachmentIDParam, 10, 64)
+	if err != nil {
+		return 0, err
+	}
+
+	return uint(attachmentID), nil
+}
+
+// URL-Query에서 특정 Key 값의 데이터를 가져옴
+func GetQueryValue(c *gin.Context, key string) string {
+	return c.Query(key)
+}

@@ -23,3 +23,27 @@ func (d *CreateAttachmentRequest) ToModel() *model.Attachment {
 		TargetID:   d.TargetID,
 	}
 }
+
+type AttachmentResponse struct {
+	TargetType string `json:"target_type"`
+	TargetID   uint   `json:"target_id"`
+	FilePath   string `json:"file_path"`
+	UploadedBy uint   `json:"uploaded_by"`
+}
+
+func ToModelAttachmentResponse(attachment *model.Attachment) *AttachmentResponse {
+	return &AttachmentResponse{
+		TargetType: attachment.TargetType,
+		TargetID:   attachment.TargetID,
+		FilePath:   attachment.FilePath,
+		UploadedBy: attachment.UploadedBy,
+	}
+}
+
+func ToModelAttachmentResponseList(attachments []*model.Attachment) []*AttachmentResponse {
+	response := make([]*AttachmentResponse, len(attachments))
+	for i, attachment := range attachments {
+		response[i] = ToModelAttachmentResponse(attachment)
+	}
+	return response
+}

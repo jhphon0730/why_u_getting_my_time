@@ -50,5 +50,5 @@
 ## Attachment
 
 - Create (form-xxx) ( required files )
-- FindOne (target_type, target_id, projectID, attachmentID) # TODO
+- FindOne (target_type, target_id, projectID, attachmentID)
 - Find (target_type, target_id, projectID) # TODO

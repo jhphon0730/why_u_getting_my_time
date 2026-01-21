@@ -9,6 +9,7 @@ type AttachmentRepository interface {
 	WithTx(fn func(tx *gorm.DB) error) error
 
 	Create(attachment *model.Attachment) error
+	FindOne(targetType string, targetID, attachmentID uint) (*model.Attachment, error)
 }
 
 type attachmentRepository struct {
@@ -27,4 +28,12 @@ func (r *attachmentRepository) WithTx(fn func(tx *gorm.DB) error) error {
 
 func (r *attachmentRepository) Create(attachment *model.Attachment) error {
 	return r.db.Create(attachment).Error
+}
+
+func (r *attachmentRepository) FindOne(targetType string, targetID, attachmentID uint) (*model.Attachment, error) {
+	var attachment model.Attachment
+	if err := r.db.Where("target_type = ? AND target_id = ? AND id = ?", targetType, targetID, attachmentID).First(&attachment).Error; err != nil {
+		return nil, err
+	}
+	return &attachment, nil
 }

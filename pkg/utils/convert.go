@@ -127,3 +127,8 @@ func InterfaceToTime(val any, defaultTime time.Time) time.Time {
 		return defaultTime
 	}
 }
+
+// InterfaceToUint converts an any to uint safely
+func InterfaceToUint(val any) uint {
+	return uint(InterfaceToInt64(val))
+}

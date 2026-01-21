@@ -10,6 +10,7 @@ import (
 
 type AttachmentService interface {
 	Create(req CreateAttachmentRequest, projectID uint, uploadedBy uint, files []UploadedFile) error
+	FindOne(targetType string, projectID, targetID, attachmentID uint) (*model.Attachment, error)
 }
 
 type attachmentService struct {
@@ -87,4 +88,23 @@ func (s *attachmentService) Create(req CreateAttachmentRequest, projectID uint, 
 		}
 		return nil
 	})
+}
+
+func (s *attachmentService) FindOne(targetType string, projectID, targetID, attachmentID uint) (*model.Attachment, error) {
+	if !s.isValidTargetType(targetType) {
+		return nil, ErrInvalidTargetType
+	}
+
+	switch targetType {
+	case "test_case":
+		if testCase, err := s.testCaseService.FindOne(projectID, targetID); err != nil || testCase == nil {
+			return nil, ErrNotFoundTestCase
+		}
+	case "test_result":
+		if testResult, err := s.testResultService.FindOneByID(targetID); err != nil || testResult == nil {
+			return nil, ErrNotFoundTestResult
+		}
+	}
+
+	return s.attachmentRepo.FindOne(targetType, targetID, attachmentID)
 }

@@ -3,15 +3,16 @@ package attachments
 import (
 	"io"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jhphon0730/action_manager/internal/response"
 	"github.com/jhphon0730/action_manager/pkg/contextutils"
+	"github.com/jhphon0730/action_manager/pkg/utils"
 )
 
 type AttachmentHandler interface {
 	Create(c *gin.Context)
+	FindOne(c *gin.Context)
 }
 
 type attachmentHandler struct {
@@ -32,11 +33,7 @@ func (h *attachmentHandler) Create(c *gin.Context) {
 	targetType := c.PostForm("target_type")
 	targetIDStr := c.PostForm("target_id")
 
-	targetID, err := strconv.ParseUint(targetIDStr, 10, 64)
-	if err != nil {
-		response.RespondError(c, http.StatusBadRequest, ErrInvalidRequest.Error())
-		return
-	}
+	targetID := utils.InterfaceToUint(targetIDStr)
 
 	req := CreateAttachmentRequest{
 		TargetType: targetType,
@@ -85,4 +82,25 @@ func (h *attachmentHandler) Create(c *gin.Context) {
 	}
 
 	response.RespondSuccess(c, http.StatusCreated, nil)
+}
+
+func (h *attachmentHandler) FindOne(c *gin.Context) {
+	projectID, _ := contextutils.GetProjectIDByParam(c)
+	attachmentID, _ := contextutils.GetAttachmentIDByParam(c)
+
+	targetType := contextutils.GetQueryValue(c, "target_type")
+	targetIDStr := contextutils.GetQueryValue(c, "target_id")
+
+	targetID := utils.InterfaceToUint(targetIDStr)
+
+	attachment, err := h.attachmentService.FindOne(targetType, projectID, targetID, attachmentID)
+	if err != nil {
+		response.RespondError(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	response.RespondSuccess(c, http.StatusOK, gin.H{
+		"message":    "Attachment found successfully",
+		"attachment": ToModelAttachmentResponse(attachment),
+	})
 }
