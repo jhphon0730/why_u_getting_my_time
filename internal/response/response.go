@@ -44,3 +44,7 @@ func RespondCreated(c *gin.Context, data interface{}) {
 func RespondNoContent(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
+
+func RespondFile(c *gin.Context, filePath string, downloadName string) {
+	c.FileAttachment(filePath, downloadName)
+}

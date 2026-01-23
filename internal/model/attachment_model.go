@@ -7,6 +7,7 @@ type Attachment struct {
 	TargetID   uint   `gorm:"not null;index"`
 
 	FilePath   string `gorm:"not null"`
+	Filename   string `gorm:"not null"` // default: ""
 	UploadedBy uint   `gorm:"not null"`
 
 	Uploader User `gorm:"foreignKey:UploadedBy"`

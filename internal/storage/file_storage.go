@@ -16,6 +16,7 @@ type FileStorage interface {
 	// 파일 스트림, 메타데이터
 	Save(file []byte, metadata map[string]string) (string, error)
 	Delete(path string) error
+	Open(path string) (*os.File, error)
 }
 
 type fileStorage struct {
@@ -57,4 +58,12 @@ func (s *fileStorage) Delete(path string) error {
 		return err
 	}
 	return nil
+}
+
+func (s *fileStorage) Open(path string) (*os.File, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	return file, nil
 }

@@ -50,5 +50,6 @@
 ## Attachment
 
 - Create (form-xxx) ( required files )
-- FindOne (target_type, target_id, projectID, attachmentID)
-- Find (target_type, target_id, projectID)
+- FindOne (target_type, targetID, projectID, attachmentID)
+- Find (target_type, targetID, projectID)
+- Download (target_type, targetID, projectID. attachmentID) -> (FindOne)

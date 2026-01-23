@@ -78,6 +78,7 @@ func (s *attachmentService) Create(req CreateAttachmentRequest, projectID uint, 
 				TargetID:   req.TargetID,
 				FilePath:   path,
 				UploadedBy: uploadedBy,
+				Filename:   f.Filename,
 			}); err != nil {
 				// DB 저장 실패 시에도 이미지 삭제
 				for _, p := range savedPaths {
