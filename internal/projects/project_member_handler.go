@@ -53,9 +53,7 @@ func (h *projectMemberHandler) AddMember(c *gin.Context) {
 		return
 	}
 
-	response.RespondCreated(c, gin.H{
-		"message": "Create Success.",
-	})
+	response.RespondCreated(c, nil, "Create Success.")
 }
 
 // UpdateRoleToManager는 프로젝트 멤버의 역할을 관리자로 업데이트합니다.
@@ -131,6 +129,5 @@ func (h *projectMemberHandler) Find(c *gin.Context) {
 
 	response.RespondOK(c, gin.H{
 		"project_members": ToModelMemberResponseList(members),
-		"message":         "Find Success.",
-	})
+	}, "Find Success.")
 }

@@ -6,6 +6,11 @@ import (
 	"github.com/jhphon0730/action_manager/internal/model"
 )
 
+type FindQuery struct {
+	Page      int
+	PageLimit int
+}
+
 // CreateTestCaseRequest 는 테스트케이스 생성 시에 사용되는 DTO입니다.
 type CreateTestCaseRequest struct {
 	ProjectID   uint   `json:"project_id"` // project__id

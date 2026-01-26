@@ -11,7 +11,7 @@ type TestCaseRepository interface {
 
 	Create(testcase *model.TestCase) error
 	FindOne(projectID, testCaseID uint) (*model.TestCase, error)
-	Find(projectID uint) ([]*model.TestCase, error)
+	Find(projectID uint, findQuery *FindQuery) ([]*model.TestCase, int64, error)
 }
 
 // TestCaseRepository 는 테스트 케이스를 관리하는 구현체입니다.
@@ -43,9 +43,27 @@ func (r *testCaseRepository) FindOne(projectID, testCaseID uint) (*model.TestCas
 	return &testcase, err
 }
 
-// Find 함수는 프로젝트 ID에 해당하는 테스트 케이스를 찾습니다.
-func (r *testCaseRepository) Find(projectID uint) ([]*model.TestCase, error) {
+// Find 함수는 프로젝트 ID와 테스트 케이스를 찾습니다.
+func (r *testCaseRepository) Find(projectID uint, findQuery *FindQuery) ([]*model.TestCase, int64, error) {
 	var testcases []*model.TestCase
-	err := r.db.Where("project_id = ?", projectID).Find(&testcases).Error
-	return testcases, err
+	var total int64
+
+	db := r.db.Model(&model.TestCase{}).Where("project_id = ?", projectID)
+
+	// 총 몇 개의 테스트 케이스가 있는지 조회
+	if err := db.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	// 정렬 및 페이징 처리 작업
+	offset := (findQuery.Page - 1) * findQuery.PageLimit
+	if offset < 0 {
+		offset = 0
+	}
+
+	if err := db.Order("created_at desc, id desc").Limit(findQuery.PageLimit).Offset(offset).Find(&testcases).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return testcases, total, nil
 }

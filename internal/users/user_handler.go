@@ -44,9 +44,7 @@ func (h *userHandler) SignUp(c *gin.Context) {
 		return
 	}
 
-	response.RespondCreated(c, gin.H{
-		"message": "Sign Up Success.",
-	})
+	response.RespondCreated(c, nil, "Sign Up Success.")
 }
 
 // SignIn 함수는 사용자를 찾아 로그인합니다.
@@ -81,10 +79,9 @@ func (h *userHandler) SignIn(c *gin.Context) {
 	c.SetCookie("token", token, 43200, "/", "", false, true)
 
 	response.RespondOK(c, gin.H{
-		"token":   token,
-		"user":    ToModelResponse(user),
-		"message": "Sign In Success.",
-	})
+		"token": token,
+		"user":  ToModelResponse(user),
+	}, "Sign In Success.")
 }
 
 // SignOut 함수는 사용자를 로그아웃합니다.
@@ -97,7 +94,5 @@ func (h *userHandler) SignOut(c *gin.Context) {
 
 	c.SetCookie("token", "", -1, "/", "", false, true)
 
-	response.RespondOK(c, gin.H{
-		"message": "Logged out successfully",
-	})
+	response.RespondOK(c, nil, "Logged out successfully")
 }

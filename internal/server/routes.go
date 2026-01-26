@@ -118,7 +118,7 @@ func (s *server) RegisterRoutes() {
 	testGroup.Use(middleware.AuthMiddleware())
 	{
 		testGroup.GET("", func(c *gin.Context) {
-			response.RespondSuccess(c, 200, "pong")
+			response.RespondSuccess(c, 200, "pong", "Ping Success.")
 		})
 	}
 }

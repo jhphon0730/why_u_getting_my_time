@@ -86,3 +86,31 @@ func GetAttachmentIDByParam(c *gin.Context) (uint, error) {
 func GetQueryValue(c *gin.Context, key string) string {
 	return c.Query(key)
 }
+
+func GetQueryPage(c *gin.Context) (int, error) {
+	pageStr := c.Query("page")
+	if pageStr == "" {
+		return 1, nil
+	}
+
+	page, err := strconv.Atoi(pageStr)
+	if err != nil {
+		return 0, err
+	}
+
+	return page, nil
+}
+
+func GetQueryLimit(c *gin.Context) (int, error) {
+	limitStr := c.Query("limit")
+	if limitStr == "" {
+		return 10, nil
+	}
+
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil {
+		return 0, err
+	}
+
+	return limit, nil
+}

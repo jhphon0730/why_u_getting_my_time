@@ -47,9 +47,7 @@ func (h *projectHandler) CreateProject(c *gin.Context) {
 		return
 	}
 
-	response.RespondSuccess(c, http.StatusCreated, gin.H{
-		"message": "Create Success.",
-	})
+	response.RespondSuccess(c, http.StatusCreated, nil, "Create Success.")
 }
 
 // GetProjects는 사용자의 모든 프로젝트를 가져옵니다.
@@ -68,5 +66,5 @@ func (h *projectHandler) GetAllProjects(c *gin.Context) {
 
 	response.RespondSuccess(c, http.StatusOK, gin.H{
 		"projects": ToModelListResponse(projects),
-	})
+	}, "Find Success.")
 }

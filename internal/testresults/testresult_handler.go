@@ -41,9 +41,7 @@ func (h *testResultHandler) Create(c *gin.Context) {
 		return
 	}
 
-	response.RespondCreated(c, gin.H{
-		"message": "Create Success.",
-	})
+	response.RespondCreated(c, nil, "Create Success.")
 }
 
 // Find 함수는 프로젝트 아이디와 테스트케이스 아이디로 테스트케이스 결과를 모두 조회
@@ -65,6 +63,5 @@ func (h *testResultHandler) Find(c *gin.Context) {
 
 	response.RespondOK(c, gin.H{
 		"test_results": ToModelTestResultResponseList(testResults),
-		"message":      "Find Success.",
-	})
+	}, "Find Success.")
 }

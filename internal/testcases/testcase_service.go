@@ -11,7 +11,7 @@ import (
 type TestCaseService interface {
 	Create(req *CreateTestCaseRequest) error
 	FindOne(projectID, testCaseID uint) (*model.TestCase, error)
-	Find(projectID uint) ([]*model.TestCase, error)
+	Find(projectID uint, findQuery *FindQuery) ([]*model.TestCase, int64, error)
 	UpdateStatus(testCaseID, projectID, userID, currentStatusID uint) error
 	UpdateAssignee(testCaseID, projectID, userID, currentAssigneeID uint) error
 }
@@ -61,8 +61,8 @@ func (s *testCaseService) FindOne(projectID, testCaseID uint) (*model.TestCase, 
 }
 
 // Find 함수는 프로젝트 ID에 해당하는 테스트 케이스를 찾습니다.
-func (s *testCaseService) Find(projectID uint) ([]*model.TestCase, error) {
-	return s.testCaseRepo.Find(projectID)
+func (s *testCaseService) Find(projectID uint, findQuery *FindQuery) ([]*model.TestCase, int64, error) {
+	return s.testCaseRepo.Find(projectID, findQuery)
 }
 
 // UpdateStatus 함수는 테스트 케이스의 상태를 업데이트합니다.

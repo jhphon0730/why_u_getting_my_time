@@ -8,7 +8,8 @@ import (
 
 // successResponse는 성공 응답 구조체
 type successResponse struct {
-	Data interface{} `json:"data"`
+	Data    interface{} `json:"data"`
+	Message string      `json:"message"`
 }
 
 // errorResponse는 실패 응답 구조체
@@ -17,9 +18,10 @@ type errorResponse struct {
 }
 
 // RespondSuccess는 성공 응답을 반환
-func RespondSuccess(c *gin.Context, status int, data interface{}) {
+func RespondSuccess(c *gin.Context, status int, data interface{}, message string) {
 	c.JSON(status, successResponse{
-		Data: data,
+		Data:    data,
+		Message: message,
 	})
 }
 
@@ -31,13 +33,13 @@ func RespondError(c *gin.Context, status int, message string) {
 }
 
 // RespondOK는 200 OK 응답
-func RespondOK(c *gin.Context, data interface{}) {
-	RespondSuccess(c, http.StatusOK, data)
+func RespondOK(c *gin.Context, data interface{}, message string) {
+	RespondSuccess(c, http.StatusOK, data, message)
 }
 
 // RespondCreated는 201 Created 응답
-func RespondCreated(c *gin.Context, data interface{}) {
-	RespondSuccess(c, http.StatusCreated, data)
+func RespondCreated(c *gin.Context, data interface{}, message string) {
+	RespondSuccess(c, http.StatusCreated, data, message)
 }
 
 // RespondNoContent는 204 No Content 응답

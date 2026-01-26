@@ -84,7 +84,7 @@ func (h *attachmentHandler) Create(c *gin.Context) {
 		return
 	}
 
-	response.RespondSuccess(c, http.StatusCreated, nil)
+	response.RespondSuccess(c, http.StatusCreated, nil, "Attachment created successfully")
 }
 
 func (h *attachmentHandler) FindOne(c *gin.Context) {
@@ -102,9 +102,8 @@ func (h *attachmentHandler) FindOne(c *gin.Context) {
 	}
 
 	response.RespondSuccess(c, http.StatusOK, gin.H{
-		"message":    "Attachment found successfully",
 		"attachment": ToModelAttachmentResponse(attachment),
-	})
+	}, "Attachment found successfully")
 }
 
 func (h *attachmentHandler) Find(c *gin.Context) {
@@ -121,9 +120,8 @@ func (h *attachmentHandler) Find(c *gin.Context) {
 	}
 
 	response.RespondSuccess(c, http.StatusOK, gin.H{
-		"message":     "Attachments found successfully",
 		"attachments": ToModelAttachmentResponseList(attachments),
-	})
+	}, "Attachments found successfully")
 }
 
 func (h *attachmentHandler) Download(c *gin.Context) {

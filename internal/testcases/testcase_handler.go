@@ -44,16 +44,29 @@ func (h *testCaseHandler) Create(c *gin.Context) {
 		return
 	}
 
-	response.RespondCreated(c, gin.H{
-		"message": "Create Success.",
-	})
+	response.RespondCreated(c, nil, "Create Success.")
 }
 
 // Find 함수는 특정 프로젝트의 테스트 케이스를 조회합니다.
 func (h *testCaseHandler) Find(c *gin.Context) {
+	page, err := contextutils.GetQueryPage(c)
+	if err != nil {
+		response.RespondError(c, http.StatusBadRequest, err.Error())
+		return
+	}
+	pageLimit, err := contextutils.GetQueryLimit(c)
+	if err != nil {
+		response.RespondError(c, http.StatusBadRequest, err.Error())
+		return
+	}
+	findQuery := &FindQuery{
+		Page:      page,
+		PageLimit: pageLimit,
+	}
+
 	projectID, _ := contextutils.GetProjectIDByParam(c)
 
-	testCases, err := h.testCaseService.Find(projectID)
+	testCases, total, err := h.testCaseService.Find(projectID, findQuery)
 	if err != nil {
 		response.RespondError(c, http.StatusInternalServerError, err.Error())
 		return
@@ -61,8 +74,8 @@ func (h *testCaseHandler) Find(c *gin.Context) {
 
 	response.RespondOK(c, gin.H{
 		"test_cases": ToModelTestCaseResponseList(testCases),
-		"message":    "Find Success.",
-	})
+		"total":      total,
+	}, "Find Success.")
 }
 
 // UpdateStatus 함수는 특정 테스트 케이스의 상태를 업데이트합니다.
@@ -92,7 +105,5 @@ func (h *testCaseHandler) UpdateStatus(c *gin.Context) {
 		return
 	}
 
-	response.RespondOK(c, gin.H{
-		"message": "Update Success.",
-	})
+	response.RespondOK(c, nil, "Update Success.")
 }

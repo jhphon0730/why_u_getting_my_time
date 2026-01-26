@@ -45,9 +45,7 @@ func (h *testStatusHandler) Create(c *gin.Context) {
 		return
 	}
 
-	response.RespondCreated(c, gin.H{
-		"message": "Create Success.",
-	})
+	response.RespondCreated(c, nil, "Create Success.")
 }
 
 // Find 함수는 특정 프로젝트의 테스트 상태를 조회합니다.
@@ -61,8 +59,7 @@ func (h *testStatusHandler) Find(c *gin.Context) {
 
 	response.RespondOK(c, gin.H{
 		"test_status": ToModelTestStatusResponseList(status),
-		"message":     "Find Success.",
-	})
+	}, "Find Success.")
 }
 
 // Delete 함수는 특정 테스트 상태를 삭제합니다.
