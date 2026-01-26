@@ -12,6 +12,7 @@ type AttachmentService interface {
 	Create(req CreateAttachmentRequest, projectID uint, uploadedBy uint, files []UploadedFile) error
 	FindOne(targetType string, projectID, targetID, attachmentID uint) (*model.Attachment, error)
 	Find(targetType string, projectID, targetID uint) ([]*model.Attachment, error)
+	Delete(targetType string, projectID, targetID, attachmentID uint) error
 }
 
 type attachmentService struct {
@@ -128,4 +129,37 @@ func (s *attachmentService) Find(targetType string, projectID, targetID uint) ([
 	}
 
 	return s.attachmentRepo.Find(targetType, targetID)
+}
+
+func (s *attachmentService) Delete(targetType string, projectID, targetID, attachmentID uint) error {
+	if !s.isValidTargetType(targetType) {
+		return ErrInvalidTargetType
+	}
+
+	switch targetType {
+	case "test_case":
+		if testCase, err := s.testCaseService.FindOne(projectID, targetID); err != nil || testCase == nil {
+			return ErrNotFoundTestCase
+		}
+	case "test_result":
+		if testResult, err := s.testResultService.FindOneByID(targetID); err != nil || testResult == nil {
+			return ErrNotFoundTestResult
+		}
+	}
+
+	attachment, err := s.attachmentRepo.FindOne(targetType, targetID, attachmentID)
+	if err != nil || attachment == nil {
+		if err != nil {
+			return err
+		}
+		return ErrNotFoundAttachment
+	}
+
+	return s.attachmentRepo.WithTx(func(tx *gorm.DB) error {
+		if err := tx.Delete(attachment).Error; err != nil {
+			return err
+		}
+
+		return s.fileStorage.Delete(attachment.FilePath)
+	})
 }

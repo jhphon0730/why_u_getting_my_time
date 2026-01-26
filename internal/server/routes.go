@@ -109,6 +109,7 @@ func (s *server) RegisterRoutes() {
 			attachmentGroup.GET("", projectmw.RequireProjectMember(projectMemberSer), attachmentHan.Find)
 			attachmentGroup.GET("/:attachmentID", projectmw.RequireProjectMember(projectMemberSer), attachmentHan.FindOne)
 			attachmentGroup.GET("/:attachmentID/download", projectmw.RequireProjectMember(projectMemberSer), attachmentHan.Download)
+			attachmentGroup.DELETE("/:attachmentID", projectmw.RequireProjectMember(projectMemberSer), attachmentHan.Delete)
 		}
 	}
 

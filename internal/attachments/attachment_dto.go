@@ -25,6 +25,7 @@ func (d *CreateAttachmentRequest) ToModel() *model.Attachment {
 }
 
 type AttachmentResponse struct {
+	ID         uint   `json:"id"`
 	TargetType string `json:"target_type"`
 	TargetID   uint   `json:"target_id"`
 	FilePath   string `json:"file_path"`
@@ -33,6 +34,7 @@ type AttachmentResponse struct {
 
 func ToModelAttachmentResponse(attachment *model.Attachment) *AttachmentResponse {
 	return &AttachmentResponse{
+		ID:         attachment.ID,
 		TargetType: attachment.TargetType,
 		TargetID:   attachment.TargetID,
 		FilePath:   attachment.FilePath,

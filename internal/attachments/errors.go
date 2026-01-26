@@ -8,4 +8,5 @@ var (
 	ErrNotFoundTestCase   = errors.New("테스트 케이스를 찾을 수 없습니다.")
 	ErrNotFoundTestResult = errors.New("테스트 결과를 찾을 수 없습니다.")
 	ErrInvalidRequest     = errors.New("잘못된 요청입니다.")
+	ErrNotFoundAttachment = errors.New("첨부 파일을 찾을 수 없습니다.")
 )

@@ -11,6 +11,7 @@ type AttachmentRepository interface {
 	Create(attachment *model.Attachment) error
 	FindOne(targetType string, targetID, attachmentID uint) (*model.Attachment, error)
 	Find(targetType string, targetID uint) ([]*model.Attachment, error)
+	Delete(targetType string, targetID, attachmentID uint) error
 }
 
 type attachmentRepository struct {
@@ -45,4 +46,8 @@ func (r *attachmentRepository) Find(targetType string, targetID uint) ([]*model.
 		return nil, err
 	}
 	return attachments, nil
+}
+
+func (r *attachmentRepository) Delete(targetType string, targetID, attachmentID uint) error {
+	return r.db.Where("target_type = ? AND target_id = ? AND id = ?", targetType, targetID, attachmentID).Delete(&model.Attachment{}).Error
 }

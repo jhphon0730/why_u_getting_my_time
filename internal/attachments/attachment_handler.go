@@ -15,6 +15,7 @@ type AttachmentHandler interface {
 	FindOne(c *gin.Context)
 	Find(c *gin.Context)
 	Download(c *gin.Context)
+	Delete(c *gin.Context)
 }
 
 type attachmentHandler struct {
@@ -140,4 +141,21 @@ func (h *attachmentHandler) Download(c *gin.Context) {
 	}
 
 	response.RespondFile(c, attachment.FilePath, attachment.Filename)
+}
+
+func (h *attachmentHandler) Delete(c *gin.Context) {
+	projectID, _ := contextutils.GetProjectIDByParam(c)
+	attachmentID, _ := contextutils.GetAttachmentIDByParam(c)
+
+	targetType := contextutils.GetQueryValue(c, "target_type")
+	targetIDStr := contextutils.GetQueryValue(c, "target_id")
+	targetID := utils.InterfaceToUint(targetIDStr)
+
+	err := h.attachmentService.Delete(targetType, projectID, targetID, attachmentID)
+	if err != nil {
+		response.RespondError(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	response.RespondNoContent(c)
 }
