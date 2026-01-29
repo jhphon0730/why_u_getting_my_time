@@ -54,3 +54,10 @@
 - Find (target_type, targetID, projectID)
 - Download (target_type, targetID, projectID. attachmentID) -> (FindOne)
 - Delete (target_type, targetID, projectID. attachmentID) -> (FindOne && )
+
+## Dashboard
+
+- Get OverViews ...
+- - CountTestCasesByStatus(projectID)
+- - CountTestCasesByAssignee(projectID)
+- - FindOverdueTestCases(projectID)

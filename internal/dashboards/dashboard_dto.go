@@ -17,3 +17,9 @@ type FindOverdueTestCases struct {
 	Title   string    `json:"title"`
 	DueDate time.Time `json:"due_date"`
 }
+
+type Dashboard struct {
+	CountTestCasesByStatus   []CountTestCasesByStatus   `json:"count_test_cases_by_status"`
+	CountTestCasesByAssignee []CountTestCasesByAssignee `json:"count_test_cases_by_assignee"`
+	FindOverdueTestCases     []FindOverdueTestCases     `json:"find_overdue_test_cases"`
+}
