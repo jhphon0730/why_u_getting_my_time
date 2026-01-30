@@ -3,6 +3,7 @@ package server
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/jhphon0730/action_manager/internal/attachments"
+	"github.com/jhphon0730/action_manager/internal/dashboards"
 	"github.com/jhphon0730/action_manager/internal/database"
 	"github.com/jhphon0730/action_manager/internal/middleware"
 	authmw "github.com/jhphon0730/action_manager/internal/middleware"
@@ -51,6 +52,10 @@ func (s *server) RegisterRoutes() {
 	attachmentRepo := attachments.NewAttachmentRepository(db)
 	attachmentSer := attachments.NewAttachmentService(attachmentRepo, testCaseSer, testResultSer, fileStorage)
 	attachmentHan := attachments.NewAttachmentHandler(attachmentSer)
+
+	dashboardRepo := dashboards.NewDashboardRepository(db)
+	dashboardSer := dashboards.NewDashboardService(dashboardRepo)
+	dashboardHan := dashboards.NewDashboardHandler(dashboardSer)
 
 	v1 := s.engine.Group("/api/v1")
 
@@ -111,6 +116,14 @@ func (s *server) RegisterRoutes() {
 			attachmentGroup.GET("/:attachmentID/download", projectmw.RequireProjectMember(projectMemberSer), attachmentHan.Download)
 			attachmentGroup.DELETE("/:attachmentID", projectmw.RequireProjectMember(projectMemberSer), attachmentHan.Delete)
 		}
+
+		/* Dashboard */
+		dashboardGroup := projectGroup.Group("/dashboards/:projectID")
+		{
+			dashboardGroup.GET("", projectmw.RequireProjectMember(projectMemberSer), dashboardHan.Find)
+		}
+
+		/* Dashboard */
 	}
 
 	/* PING TEST */

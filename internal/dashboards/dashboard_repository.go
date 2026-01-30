@@ -30,13 +30,21 @@ func (r *dashboardRepository) WithTx(fn func(tx *gorm.DB) error) error {
 
 func (r *dashboardRepository) CountTestCasesByStatus(projectID uint) []CountTestCasesByStatus {
 	var cases []CountTestCasesByStatus
-	r.db.Model(&model.TestCase{}).Where("project_id = ?", projectID).Select("status, count(*) as count").Group("status").Scan(&cases)
+
+	r.db.
+		Table("test_statuses ts").
+		Select("ts.id as status_id, COUNT(tc.id) as count").
+		Joins("LEFT JOIN test_cases tc ON tc.current_status_id = ts.id").
+		Where("ts.project_id = ?", projectID).
+		Group("ts.id, ts.name").
+		Scan(&cases)
+
 	return cases
 }
 
 func (r *dashboardRepository) CountTestCasesByAssignee(projectID uint) []CountTestCasesByAssignee {
 	var cases []CountTestCasesByAssignee
-	r.db.Model(&model.TestCase{}).Where("project_id = ?", projectID).Select("assignee_id, count(*) as count").Group("assignee_id").Scan(&cases)
+	r.db.Model(&model.TestCase{}).Where("project_id = ?", projectID).Select("current_assignee_id, count(*) as count").Group("current_assignee_id").Scan(&cases)
 	return cases
 }
 
