@@ -36,7 +36,7 @@ func (r *dashboardRepository) CountTestCasesByStatus(projectID uint) []CountTest
 		Select("ts.id as status_id, COUNT(tc.id) as count").
 		Joins("LEFT JOIN test_cases tc ON tc.current_status_id = ts.id").
 		Where("ts.project_id = ?", projectID).
-		Group("ts.id, ts.name").
+		Group("ts.id").
 		Scan(&cases)
 
 	return cases
